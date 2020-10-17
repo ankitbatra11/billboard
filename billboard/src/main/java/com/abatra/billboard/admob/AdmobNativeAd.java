@@ -1,6 +1,7 @@
 package com.abatra.billboard.admob;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
@@ -14,6 +15,8 @@ import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import javax.annotation.Nullable;
 
 public class AdmobNativeAd extends AdmobAd {
+
+    private static final String LOG_TAG = "AdmobNativeAd";
 
     @Nullable
     private NativeAdOptions nativeAdOptions;
@@ -38,6 +41,7 @@ public class AdmobNativeAd extends AdmobAd {
         }
         builder.forUnifiedNativeAd(unifiedNativeAd ->
         {
+            Log.d(LOG_TAG, "adLoaded!");
             this.unifiedNativeAd = unifiedNativeAd;
             adCallback.adLoaded();
 
@@ -46,6 +50,7 @@ public class AdmobNativeAd extends AdmobAd {
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
+                Log.i(LOG_TAG, "loadAdError=" + loadAdError.toString());
                 adCallback.adLoadFailed();
             }
 
