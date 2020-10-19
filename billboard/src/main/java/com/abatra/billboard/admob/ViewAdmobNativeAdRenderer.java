@@ -14,7 +14,10 @@ import javax.annotation.Nullable;
 
 public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
 
-    private final UnifiedNativeAdView unifiedNativeAdView;
+    private final View nativeAdViewContainer;
+
+    @IdRes
+    private final int unifiedNativeAdViewId;
 
     @IdRes
     private final int headlineViewId;
@@ -31,10 +34,12 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     private Integer ctaViewId;
 
     public ViewAdmobNativeAdRenderer(@IdRes int headlineViewId,
-                                     UnifiedNativeAdView unifiedNativeAdView,
+                                     View nativeAdViewContainer,
+                                     @IdRes int unifiedNativeAdViewId,
                                      @IdRes int bodyViewId) {
-        this.unifiedNativeAdView = unifiedNativeAdView;
         this.headlineViewId = headlineViewId;
+        this.unifiedNativeAdViewId = unifiedNativeAdViewId;
+        this.nativeAdViewContainer = nativeAdViewContainer;
         this.bodyViewId = bodyViewId;
     }
 
@@ -51,8 +56,10 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     @Override
     public void render(@Nonnull UnifiedNativeAd unifiedNativeAd) {
 
+        UnifiedNativeAdView unifiedNativeAdView = nativeAdViewContainer.findViewById(unifiedNativeAdViewId);
+
         if (iconViewId != null) {
-            ImageView imageView = unifiedNativeAdView.findViewById(iconViewId);
+            ImageView imageView = nativeAdViewContainer.findViewById(iconViewId);
             if (unifiedNativeAd.getIcon() != null) {
                 imageView.setImageDrawable(unifiedNativeAd.getIcon().getDrawable());
                 unifiedNativeAdView.setIconView(imageView);
@@ -61,16 +68,16 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
             }
         }
 
-        TextView headlineTextView = unifiedNativeAdView.findViewById(headlineViewId);
+        TextView headlineTextView = nativeAdViewContainer.findViewById(headlineViewId);
         headlineTextView.setText(unifiedNativeAd.getHeadline());
         unifiedNativeAdView.setHeadlineView(headlineTextView);
 
-        TextView bodyTextView = unifiedNativeAdView.findViewById(bodyViewId);
+        TextView bodyTextView = nativeAdViewContainer.findViewById(bodyViewId);
         bodyTextView.setText(unifiedNativeAd.getBody());
         unifiedNativeAdView.setBodyView(bodyTextView);
 
         if (ctaViewId != null) {
-            TextView ctaTextView = unifiedNativeAdView.findViewById(ctaViewId);
+            TextView ctaTextView = nativeAdViewContainer.findViewById(ctaViewId);
             if (unifiedNativeAd.getCallToAction() != null) {
                 ctaTextView.setText(unifiedNativeAd.getCallToAction());
                 unifiedNativeAdView.setCallToActionView(ctaTextView);
