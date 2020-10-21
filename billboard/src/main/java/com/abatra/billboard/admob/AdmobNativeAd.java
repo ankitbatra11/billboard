@@ -7,7 +7,6 @@ import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
-import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.formats.NativeAdOptions;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
@@ -35,7 +34,7 @@ public class AdmobNativeAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
-        AdLoader.Builder builder = new AdLoader.Builder(context, id);
+        AdLoader.Builder builder = newAdLoaderBuilder();
         if (nativeAdOptions != null) {
             builder.withNativeAdOptions(nativeAdOptions);
         }
@@ -54,7 +53,7 @@ public class AdmobNativeAd extends AdmobAd {
                 adCallback.adLoadFailed();
             }
 
-        }).build().loadAd(new AdRequest.Builder().build());
+        }).build().loadAd(buildAdRequest());
     }
 
     @Override
