@@ -22,6 +22,7 @@ public class AdmobInterstitialAd extends AdmobAd {
         interstitialAd = new InterstitialAd(context);
         interstitialAd.setAdUnitId(id);
         interstitialAd.setAdListener(new AdListenerAdapter(adCallback));
+        interstitialAd.loadAd(buildAdRequest());
     }
 
     @Override
