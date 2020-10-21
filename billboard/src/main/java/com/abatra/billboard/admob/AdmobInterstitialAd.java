@@ -13,7 +13,7 @@ public class AdmobInterstitialAd extends AdmobAd {
     @Nullable
     private InterstitialAd interstitialAd;
 
-    protected AdmobInterstitialAd(Context context, String id) {
+    public AdmobInterstitialAd(Context context, String id) {
         super(context, id);
     }
 
