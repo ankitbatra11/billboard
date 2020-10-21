@@ -3,6 +3,8 @@ package com.abatra.billboard.admob;
 import android.content.Context;
 
 import com.abatra.billboard.AbstractAd;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
 
 abstract public class AdmobAd extends AbstractAd {
 
@@ -17,5 +19,13 @@ abstract public class AdmobAd extends AbstractAd {
     @Override
     public void onDestroy() {
         context = null;
+    }
+
+    protected AdLoader.Builder newAdLoaderBuilder() {
+        return new AdLoader.Builder(context, id);
+    }
+
+    protected AdRequest buildAdRequest() {
+        return new AdRequest.Builder().build();
     }
 }
