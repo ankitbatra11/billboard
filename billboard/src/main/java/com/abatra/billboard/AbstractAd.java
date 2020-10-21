@@ -50,5 +50,10 @@ abstract public class AbstractAd implements Ad {
         private void onAdResponse() {
             loading.set(false);
         }
+
+        @Override
+        public void adClosed() {
+            adCallback.adClosed();
+        }
     }
 }
