@@ -25,6 +25,11 @@ public class AdmobInterstitialAd extends AdmobAd {
     }
 
     @Override
+    public boolean isLoaded() {
+        return interstitialAd != null && interstitialAd.isLoaded();
+    }
+
+    @Override
     public void render(AdRenderer adRenderer) {
         if (interstitialAd != null) {
             AdmobInterstitialAdRenderer interstitialAdRenderer = (AdmobInterstitialAdRenderer) adRenderer;
