@@ -19,10 +19,6 @@ abstract public class AbstractAd implements Ad {
         return loading.get();
     }
 
-    private void onAdResponse() {
-        loading.set(false);
-    }
-
     protected abstract void doLoadAd(AdCallback adCallback);
 
     @Override
@@ -49,6 +45,10 @@ abstract public class AbstractAd implements Ad {
         public void adLoadFailed() {
             onAdResponse();
             adCallback.adLoadFailed();
+        }
+
+        private void onAdResponse() {
+            loading.set(false);
         }
     }
 }
