@@ -53,6 +53,11 @@ public class AdmobNativeAd extends AdmobAd {
                 adCallback.adLoadFailed();
             }
 
+            @Override
+            public void onAdClosed() {
+                super.onAdClosed();
+                adCallback.adClosed();
+            }
         }).build().loadAd(buildAdRequest());
     }
 

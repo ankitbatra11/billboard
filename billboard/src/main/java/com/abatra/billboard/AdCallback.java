@@ -10,4 +10,7 @@ public interface AdCallback {
 
     default void adLoadFailed() {
     }
+
+    default void adClosed() {
+    }
 }

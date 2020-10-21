@@ -19,6 +19,12 @@ public class AdListenerAdapter extends AdListener {
     }
 
     @Override
+    public void onAdClosed() {
+        super.onAdClosed();
+        adCallback.adClosed();
+    }
+
+    @Override
     public void onAdLoaded() {
         super.onAdLoaded();
         adCallback.adLoaded();
