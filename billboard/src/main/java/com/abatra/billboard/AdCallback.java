@@ -13,4 +13,7 @@ public interface AdCallback {
 
     default void adClosed() {
     }
+
+    default void adClicked() {
+    }
 }

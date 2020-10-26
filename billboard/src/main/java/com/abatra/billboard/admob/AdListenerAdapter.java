@@ -29,4 +29,10 @@ public class AdListenerAdapter extends AdListener {
         super.onAdLoaded();
         adCallback.adLoaded();
     }
+
+    @Override
+    public void onAdClicked() {
+        super.onAdClicked();
+        adCallback.adClicked();
+    }
 }

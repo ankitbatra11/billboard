@@ -54,6 +54,12 @@ public class AdmobNativeAd extends AdmobAd {
             }
 
             @Override
+            public void onAdClicked() {
+                super.onAdClicked();
+                adCallback.adClicked();
+            }
+
+            @Override
             public void onAdClosed() {
                 super.onAdClosed();
                 adCallback.adClosed();
