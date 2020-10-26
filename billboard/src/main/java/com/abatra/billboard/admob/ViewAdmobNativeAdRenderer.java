@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import androidx.annotation.IdRes;
 
+import com.google.android.gms.ads.formats.MediaView;
+import com.google.android.gms.ads.formats.NativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAd;
 import com.google.android.gms.ads.formats.UnifiedNativeAdView;
 
@@ -33,6 +35,10 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     @Nullable
     private Integer ctaViewId;
 
+    @IdRes
+    @Nullable
+    private Integer mediaViewId;
+
     public ViewAdmobNativeAdRenderer(@IdRes int headlineViewId,
                                      View nativeAdViewContainer,
                                      @IdRes int unifiedNativeAdViewId,
@@ -53,6 +59,11 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
         return this;
     }
 
+    public ViewAdmobNativeAdRenderer setMediaViewId(@Nullable Integer mediaViewId) {
+        this.mediaViewId = mediaViewId;
+        return this;
+    }
+
     @Override
     public void render(@Nonnull UnifiedNativeAd unifiedNativeAd) {
 
@@ -60,8 +71,9 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
 
         if (iconViewId != null) {
             ImageView imageView = nativeAdViewContainer.findViewById(iconViewId);
-            if (unifiedNativeAd.getIcon() != null) {
-                imageView.setImageDrawable(unifiedNativeAd.getIcon().getDrawable());
+            NativeAd.Image image = unifiedNativeAd.getIcon();
+            if (image != null) {
+                imageView.setImageDrawable(image.getDrawable());
                 unifiedNativeAdView.setIconView(imageView);
             } else {
                 imageView.setVisibility(View.GONE);
@@ -84,6 +96,11 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
             } else {
                 ctaTextView.setVisibility(View.GONE);
             }
+        }
+
+        if (mediaViewId != null) {
+            MediaView mediaView = nativeAdViewContainer.findViewById(mediaViewId);
+            unifiedNativeAdView.setMediaView(mediaView);
         }
 
         unifiedNativeAdView.setNativeAd(unifiedNativeAd);
