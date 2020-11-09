@@ -27,8 +27,10 @@ public class MainActivity extends AppCompatActivity {
             public void adLoaded() {
                 nativeAd.render((AdmobNativeAdRenderer) unifiedNativeAd -> {
 
-                    binding.nativeAdIcon.setImageDrawable(unifiedNativeAd.getIcon().getDrawable());
-                    binding.unifiedNativeAdView.setIconView(binding.nativeAdIcon);
+                    if (unifiedNativeAd.getIcon() != null) {
+                        binding.nativeAdIcon.setImageDrawable(unifiedNativeAd.getIcon().getDrawable());
+                        binding.unifiedNativeAdView.setIconView(binding.nativeAdIcon);
+                    }
 
                     binding.nativeAdTitle.setText(unifiedNativeAd.getHeadline());
                     binding.unifiedNativeAdView.setHeadlineView(binding.nativeAdTitle);
