@@ -46,22 +46,25 @@ class AppOpenAdDisplayer extends FullScreenContentCallback implements AppLifecyc
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
+        Log.v(LOG_TAG, "onActivityStarted=" + activity);
         currentActivity = activity;
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
+        Log.v(LOG_TAG, "onActivityResumed=" + activity);
         currentActivity = activity;
     }
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
+        Log.v(LOG_TAG, "onActivityDestroyed=" + activity);
         currentActivity = null;
     }
 
     @Override
     public void onAppStarted() {
-        Log.d(LOG_TAG, "onAppStarted");
+        Log.v(LOG_TAG, "onAppStarted currentActivity=" + currentActivity + " showingAd=" + showingAd);
         if (!showingAd.get() && currentActivity instanceof AppOpenAdActivity && appOpenAd.isLoaded()) {
             appOpenAd.render((AppOpenAdActivity) currentActivity);
         }
