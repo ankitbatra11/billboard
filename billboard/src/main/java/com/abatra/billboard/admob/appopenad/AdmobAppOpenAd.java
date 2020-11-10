@@ -59,7 +59,7 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     @Override
     public boolean isLoaded() {
-        return appOpenAdManager != null && appOpenAdManager.isLoaded();
+        return appOpenAdManager.isLoaded();
     }
 
     @Override

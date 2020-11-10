@@ -141,7 +141,7 @@ class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements Applic
         destroy();
     }
 
-    public void destroy() {
+    void destroy() {
         showingAd = false;
         appOpenAdShowCondition = null;
         currentActivity = null;
