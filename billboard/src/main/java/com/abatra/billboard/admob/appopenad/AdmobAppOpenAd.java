@@ -18,14 +18,14 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     private final Application application;
     private final String adUnitId;
-    private AppOpenAdContext appOpenAdContext;
+    private AppOpenAdManager appOpenAdManager;
 
     private AdmobAppOpenAd(Application application, String adUnitId) {
         this.application = application;
         this.adUnitId = adUnitId;
     }
 
-    public static void loadAd(Application application, String adUnitId, AppOpenAdShowCondition condition) {
+    public static AdmobAppOpenAd loadAd(Application application, String adUnitId, AppOpenAdShowCondition condition) {
 
         MobileAds.initialize(application, initializationStatus -> Log.i(LOG_TAG, " MobileAds.initialized"));
 
@@ -37,18 +37,20 @@ public class AdmobAppOpenAd extends AbstractAd {
                 admobAppOpenAd.loadAd(this);
             }
         };
-        admobAppOpenAd.appOpenAdContext = AppOpenAdContext.initialize(application, condition);
+        admobAppOpenAd.appOpenAdManager = AppOpenAdManager.initialize(application, condition);
         admobAppOpenAd.loadAd(adCallback);
+
+        return admobAppOpenAd;
     }
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
         Log.d(LOG_TAG, "loading app open ad");
-        appOpenAdContext.setAdCallback(adCallback);
+        appOpenAdManager.setAdCallback(adCallback);
         AppOpenAd.load(application, adUnitId,
                 new AdRequest.Builder().build(),
                 APP_OPEN_AD_ORIENTATION_PORTRAIT,
-                appOpenAdContext);
+                appOpenAdManager);
     }
 
     @Override
@@ -57,10 +59,11 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     @Override
     public boolean isLoaded() {
-        return appOpenAdContext != null && appOpenAdContext.isLoaded();
+        return appOpenAdManager != null && appOpenAdManager.isLoaded();
     }
 
     @Override
     public void onDestroy() {
+        appOpenAdManager.destroy();
     }
 }
