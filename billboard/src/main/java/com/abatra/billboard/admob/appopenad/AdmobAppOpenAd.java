@@ -10,6 +10,8 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 
+import javax.annotation.Nullable;
+
 import static com.google.android.gms.ads.appopen.AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT;
 
 public class AdmobAppOpenAd extends AbstractAd {
@@ -18,52 +20,47 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     private final Application application;
     private final String adUnitId;
-    private AppOpenAdManager appOpenAdManager;
+    private AppOpenAdDisplayer appOpenAdDisplayer;
+
+    @Nullable
+    private AppOpenAdReceiver appOpenAdReceiver;
 
     private AdmobAppOpenAd(Application application, String adUnitId) {
         this.application = application;
         this.adUnitId = adUnitId;
     }
 
-    public static AdmobAppOpenAd loadAd(Application application, String adUnitId, AppOpenAdShowCondition condition) {
+    public static AdmobAppOpenAd create(Application application, String adUnitId) {
 
         MobileAds.initialize(application, initializationStatus -> Log.i(LOG_TAG, " MobileAds.initialized"));
 
         AdmobAppOpenAd admobAppOpenAd = new AdmobAppOpenAd(application, adUnitId);
-        AdCallback adCallback = new AdCallback() {
-            @Override
-            public void adClosed() {
-                Log.d(LOG_TAG, "received adClosed callback");
-                admobAppOpenAd.loadAd(this);
-            }
-        };
-        admobAppOpenAd.appOpenAdManager = AppOpenAdManager.initialize(application, condition);
-        admobAppOpenAd.loadAd(adCallback);
-
+        admobAppOpenAd.appOpenAdDisplayer = AppOpenAdDisplayer.create(application, admobAppOpenAd);
         return admobAppOpenAd;
     }
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
-        Log.d(LOG_TAG, "loading app open ad");
-        appOpenAdManager.setAdCallback(adCallback);
-        AppOpenAd.load(application, adUnitId,
-                new AdRequest.Builder().build(),
-                APP_OPEN_AD_ORIENTATION_PORTRAIT,
-                appOpenAdManager);
+        appOpenAdReceiver = new AppOpenAdReceiver(adCallback);
+        AppOpenAd.load(application, adUnitId, new AdRequest.Builder().build(), APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdReceiver);
     }
 
     @Override
     public void render(AdRenderer adRenderer) {
+        AdmobAppOpenAdRender admobAppOpenAdRender = (AdmobAppOpenAdRender) adRenderer;
+        admobAppOpenAdRender.render(appOpenAdReceiver.getAppOpenAd(), appOpenAdDisplayer);
     }
 
     @Override
     public boolean isLoaded() {
-        return appOpenAdManager.isLoaded();
+        return appOpenAdReceiver != null && appOpenAdReceiver.isLoaded();
     }
 
     @Override
     public void onDestroy() {
-        appOpenAdManager.destroy();
+        if (appOpenAdReceiver != null) {
+            appOpenAdReceiver.destroy();
+            appOpenAdReceiver = null;
+        }
     }
 }

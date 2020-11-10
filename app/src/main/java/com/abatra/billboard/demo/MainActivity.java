@@ -9,9 +9,12 @@ import com.abatra.billboard.Ad;
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.admob.AdmobNativeAd;
 import com.abatra.billboard.admob.AdmobNativeAdRenderer;
+import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.appopen.AppOpenAd;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AppOpenAdActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,5 +48,10 @@ public class MainActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    @Override
+    public void render(AppOpenAd appOpenAd, FullScreenContentCallback fullScreenContentCallback) {
+        appOpenAd.show(this, fullScreenContentCallback);
     }
 }

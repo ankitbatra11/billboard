@@ -1,8 +1,12 @@
 package com.abatra.billboard;
 
+import android.util.Log;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 abstract public class AbstractAd implements Ad {
+
+    private static final String LOG_TAG = "AbstractAd";
 
     private final AtomicBoolean loading = new AtomicBoolean(false);
     private final AtomicBoolean loaded = new AtomicBoolean(false);
@@ -12,7 +16,16 @@ abstract public class AbstractAd implements Ad {
         if (!isLoaded() && !isLoading()) {
             loading.set(true);
             doLoadAd(new AdCallbackWrapper(adCallback));
+        } else {
+            Log.d(LOG_TAG, "Not loading ad. loaded=" + isLoaded() + " loading=" + isLoading());
         }
+    }
+
+    @Override
+    public void forceLoadAd(AdCallback adCallback) {
+        loaded.set(false);
+        loading.set(false);
+        loadAd(adCallback);
     }
 
     private boolean isLoading() {

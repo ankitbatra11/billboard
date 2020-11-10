@@ -14,4 +14,6 @@ public interface Ad extends LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     void onDestroy();
+
+    void forceLoadAd(AdCallback adCallback);
 }

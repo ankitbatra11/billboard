@@ -16,4 +16,9 @@ public interface AdCallback {
 
     default void adClicked() {
     }
+
+    default void adDisplayed() {
+    }
+
+    default void adFailedToShow() {}
 }
