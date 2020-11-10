@@ -21,10 +21,11 @@ import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nullable;
 
-class AppOpenAdContext extends AppOpenAd.AppOpenAdLoadCallback implements Application.ActivityLifecycleCallbacks,
+class AppOpenAdManager extends AppOpenAd.AppOpenAdLoadCallback implements Application.ActivityLifecycleCallbacks,
         LifecycleObserver {
 
-    public static final String LOG_TAG = "AppOpenAdContext";
+    public static final String LOG_TAG = "AppOpenAdManager";
+
     private static boolean showingAd = false;
 
     private AdCallback adCallback;
@@ -41,18 +42,18 @@ class AppOpenAdContext extends AppOpenAd.AppOpenAdLoadCallback implements Applic
         this.adCallback = adCallback;
     }
 
-    static AppOpenAdContext initialize(Application application, AppOpenAdShowCondition appOpenAdShowCondition) {
+    static AppOpenAdManager initialize(Application application, AppOpenAdShowCondition appOpenAdShowCondition) {
 
-        AppOpenAdContext appOpenAdContext = new AppOpenAdContext();
-        appOpenAdContext.appOpenAdShowCondition = appOpenAdShowCondition
-                .and(currentActivity -> appOpenAdContext.currentActivity != null)
-                .and(currentActivity -> appOpenAdContext.isLoaded())
-                .and(currentActivity -> !AppOpenAdContext.showingAd);
+        AppOpenAdManager appOpenAdManager = new AppOpenAdManager();
+        appOpenAdManager.appOpenAdShowCondition = appOpenAdShowCondition
+                .and(currentActivity -> appOpenAdManager.currentActivity != null)
+                .and(currentActivity -> appOpenAdManager.isLoaded())
+                .and(currentActivity -> !AppOpenAdManager.showingAd);
 
-        ProcessLifecycleOwner.get().getLifecycle().addObserver(appOpenAdContext);
-        application.registerActivityLifecycleCallbacks(appOpenAdContext);
+        ProcessLifecycleOwner.get().getLifecycle().addObserver(appOpenAdManager);
+        application.registerActivityLifecycleCallbacks(appOpenAdManager);
 
-        return appOpenAdContext;
+        return appOpenAdManager;
     }
 
     @Override
@@ -74,6 +75,7 @@ class AppOpenAdContext extends AppOpenAd.AppOpenAdLoadCallback implements Applic
         return appOpenAd != null && wasLoadTimeLessThan(4, TimeUnit.HOURS);
     }
 
+    @SuppressWarnings("SameParameterValue")
     private boolean wasLoadTimeLessThan(int duration, TimeUnit unit) {
         return (SystemClock.uptimeMillis() - loadTime) < unit.toMillis(duration);
     }
@@ -136,6 +138,11 @@ class AppOpenAdContext extends AppOpenAd.AppOpenAdLoadCallback implements Applic
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onAppDestroy() {
+        destroy();
+    }
+
+    void destroy() {
+        showingAd = false;
         appOpenAdShowCondition = null;
         currentActivity = null;
         appOpenAd = null;
