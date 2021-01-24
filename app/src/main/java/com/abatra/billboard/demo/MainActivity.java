@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.abatra.billboard.Ad;
 import com.abatra.billboard.AdCallback;
+import com.abatra.billboard.admob.AdmobInterstitialAd;
+import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobNativeAd;
 import com.abatra.billboard.admob.AdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
@@ -46,6 +48,14 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
                     binding.unifiedNativeAdView.setNativeAd(unifiedNativeAd);
                 });
+            }
+        });
+
+        AdmobInterstitialAd admobInterstitialAd = new AdmobInterstitialAd(this, "ca-app-pub-3940256099942544/1033173712");
+        admobInterstitialAd.loadAd(new AdCallback() {
+            @Override
+            public void adLoaded() {
+                admobInterstitialAd.render((AdmobInterstitialAdRenderer) interstitialAd -> interstitialAd.show(MainActivity.this));
             }
         });
     }

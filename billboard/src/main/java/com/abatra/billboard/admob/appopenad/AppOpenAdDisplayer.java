@@ -2,7 +2,6 @@ package com.abatra.billboard.admob.appopenad;
 
 import android.app.Activity;
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -16,9 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nullable;
 
-class AppOpenAdDisplayer extends FullScreenContentCallback implements AppLifecycleObserver, ActivityLifecycleCallbackObserver {
+import timber.log.Timber;
 
-    public static final String LOG_TAG = "AppOpenAdDisplayer";
+class AppOpenAdDisplayer extends FullScreenContentCallback implements AppLifecycleObserver, ActivityLifecycleCallbackObserver {
 
     private static final AtomicBoolean showingAd = new AtomicBoolean(false);
 
@@ -40,31 +39,31 @@ class AppOpenAdDisplayer extends FullScreenContentCallback implements AppLifecyc
     }
 
     @Override
-    public void onAppCreated() {
+    public void onCreate() {
         application.registerActivityLifecycleCallbacks(this);
     }
 
     @Override
     public void onActivityStarted(@NonNull Activity activity) {
-        Log.v(LOG_TAG, "onActivityStarted=" + activity);
+        Timber.v("onActivityStarted=%s", activity);
         currentActivity = activity;
     }
 
     @Override
     public void onActivityResumed(@NonNull Activity activity) {
-        Log.v(LOG_TAG, "onActivityResumed=" + activity);
+        Timber.v("onActivityResumed=%s", activity);
         currentActivity = activity;
     }
 
     @Override
     public void onActivityDestroyed(@NonNull Activity activity) {
-        Log.v(LOG_TAG, "onActivityDestroyed=" + activity);
+        Timber.v("onActivityDestroyed=%s", activity);
         currentActivity = null;
     }
 
     @Override
-    public void onAppStarted() {
-        Log.v(LOG_TAG, "onAppStarted currentActivity=" + currentActivity + " showingAd=" + showingAd);
+    public void onStart() {
+        Timber.v("onAppStarted currentActivity=" + currentActivity + " showingAd=" + showingAd);
         if (!showingAd.get() && currentActivity instanceof AppOpenAdActivity && appOpenAd.isLoaded()) {
             appOpenAd.render((AppOpenAdActivity) currentActivity);
         }
@@ -73,27 +72,27 @@ class AppOpenAdDisplayer extends FullScreenContentCallback implements AppLifecyc
     @Override
     public void onAdShowedFullScreenContent() {
         super.onAdShowedFullScreenContent();
-        Log.d(LOG_TAG, "onAdShowedFullScreenContent");
+        Timber.d("onAdShowedFullScreenContent");
         showingAd.set(true);
     }
 
     @Override
     public void onAdFailedToShowFullScreenContent(AdError adError) {
         super.onAdFailedToShowFullScreenContent(adError);
-        Log.d(LOG_TAG, "onAdFailedToShowFullScreenContent error=" + adError);
+        Timber.d("onAdFailedToShowFullScreenContent error=%s", adError);
         showingAd.set(false);
     }
 
     @Override
     public void onAdDismissedFullScreenContent() {
         super.onAdDismissedFullScreenContent();
-        Log.d(LOG_TAG, "onAdDismissedFullScreenContent");
+        Timber.d("onAdDismissedFullScreenContent");
         showingAd.set(false);
     }
 
     @Override
-    public void onAppDestroyed() {
-        Log.d(LOG_TAG, "onAppDestroyed");
+    public void onDestroy() {
+        Timber.d("onAppDestroyed");
         application.unregisterActivityLifecycleCallbacks(this);
         appOpenAd.onDestroy();
     }

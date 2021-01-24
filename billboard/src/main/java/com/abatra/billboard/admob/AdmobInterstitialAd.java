@@ -2,11 +2,14 @@ package com.abatra.billboard.admob;
 
 import android.content.Context;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
 public class AdmobInterstitialAd extends AdmobAd {
 
@@ -19,15 +22,25 @@ public class AdmobInterstitialAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
-        interstitialAd = new InterstitialAd(context);
-        interstitialAd.setAdUnitId(id);
-        interstitialAd.setAdListener(new AdListenerAdapter(adCallback));
-        interstitialAd.loadAd(buildAdRequest());
+        InterstitialAd.load(context, id, buildAdRequest(), new InterstitialAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
+                super.onAdLoaded(interstitialAd);
+                AdmobInterstitialAd.this.interstitialAd = interstitialAd;
+                adCallback.adLoaded();
+            }
+
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                super.onAdFailedToLoad(loadAdError);
+                adCallback.adLoadFailed();
+            }
+        });
     }
 
     @Override
     public boolean isLoaded() {
-        return interstitialAd != null && interstitialAd.isLoaded();
+        return interstitialAd != null;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.abatra.billboard.admob;
 
 import com.abatra.billboard.AdRenderer;
-import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.interstitial.InterstitialAd;
 
 import javax.annotation.Nonnull;
 
