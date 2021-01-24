@@ -59,11 +59,6 @@ public interface AdCallback {
         public void adFailedToShow() {
             Timber.d("ad failed to show");
         }
-
-        @Override
-        public FullScreenContentCallback asFullScreenContentCallback() {
-            return asFullScreenContentCallback();
-        }
     }
 
     class FullScreenContentCallbackAdapter extends FullScreenContentCallback {
