@@ -3,31 +3,67 @@ package com.abatra.billboard;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 
+import timber.log.Timber;
+
 public interface AdCallback {
 
-    AdCallback NO_OP = new AdCallback() {
-    };
+    AdCallback LOG = new LogAdCallback();
 
-    default void adLoaded() {
-    }
+    void adLoaded();
 
-    default void adLoadFailed() {
-    }
+    void adLoadFailed();
 
-    default void adClosed() {
-    }
+    void adClosed();
 
-    default void adClicked() {
-    }
+    void adClicked();
 
-    default void adDisplayed() {
-    }
+    void adDisplayed();
 
-    default void adFailedToShow() {
-    }
+    void adFailedToShow();
 
     default FullScreenContentCallback asFullScreenContentCallback() {
         return new FullScreenContentCallbackAdapter(this);
+    }
+
+    class LogAdCallback implements AdCallback {
+
+        public LogAdCallback() {
+        }
+
+        @Override
+        public void adLoaded() {
+            Timber.d("ad loaded");
+        }
+
+        @Override
+        public void adLoadFailed() {
+            Timber.d("ad load failed");
+        }
+
+        @Override
+        public void adClosed() {
+            Timber.d("ad closed");
+        }
+
+        @Override
+        public void adClicked() {
+            Timber.d("ad clicked");
+        }
+
+        @Override
+        public void adDisplayed() {
+            Timber.d("ad displayed");
+        }
+
+        @Override
+        public void adFailedToShow() {
+            Timber.d("ad failed to show");
+        }
+
+        @Override
+        public FullScreenContentCallback asFullScreenContentCallback() {
+            throw new UnsupportedOperationException();
+        }
     }
 
     class FullScreenContentCallbackAdapter extends FullScreenContentCallback {

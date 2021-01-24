@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
         Ad nativeAd = new AdmobNativeAd(this, "ca-app-pub-3940256099942544/2247696110");
         getLifecycle().addObserver(nativeAd);
-        nativeAd.loadAd(new AdCallback() {
+        nativeAd.loadAd(new AdCallback.LogAdCallback() {
             @Override
             public void adLoaded() {
                 nativeAd.render((AdmobNativeAdRenderer) unifiedNativeAd -> {
@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
         });
 
         AdmobInterstitialAd admobInterstitialAd = new AdmobInterstitialAd(this, "ca-app-pub-3940256099942544/1033173712");
-        admobInterstitialAd.loadAd(new AdCallback() {
+        admobInterstitialAd.loadAd(new AdCallback.LogAdCallback() {
             @Override
             public void adLoaded() {
                 admobInterstitialAd.render((AdmobInterstitialAdRenderer) interstitialAd -> interstitialAd.show(MainActivity.this));

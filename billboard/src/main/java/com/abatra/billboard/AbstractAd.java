@@ -1,12 +1,10 @@
 package com.abatra.billboard;
 
-import android.util.Log;
-
 import java.util.concurrent.atomic.AtomicBoolean;
 
-abstract public class AbstractAd implements Ad {
+import timber.log.Timber;
 
-    private static final String LOG_TAG = "AbstractAd";
+abstract public class AbstractAd implements Ad {
 
     private final AtomicBoolean loading = new AtomicBoolean(false);
     private final AtomicBoolean loaded = new AtomicBoolean(false);
@@ -17,7 +15,7 @@ abstract public class AbstractAd implements Ad {
             loading.set(true);
             doLoadAd(new AdCallbackWrapper(adCallback));
         } else {
-            Log.d(LOG_TAG, "Not loading ad. loaded=" + isLoaded() + " loading=" + isLoading());
+            Timber.d("Not loading ad. loaded=" + isLoaded() + " loading=" + isLoading());
         }
     }
 
@@ -39,7 +37,7 @@ abstract public class AbstractAd implements Ad {
         return loaded.get();
     }
 
-    private class AdCallbackWrapper implements AdCallback {
+    private class AdCallbackWrapper extends AdCallback.LogAdCallback {
 
         private final AdCallback adCallback;
 
@@ -49,6 +47,7 @@ abstract public class AbstractAd implements Ad {
 
         @Override
         public void adLoaded() {
+            super.adLoaded();
             onAdResponse();
             loaded.set(true);
             adCallback.adLoaded();
@@ -56,6 +55,7 @@ abstract public class AbstractAd implements Ad {
 
         @Override
         public void adLoadFailed() {
+            super.adLoadFailed();
             onAdResponse();
             adCallback.adLoadFailed();
         }
@@ -66,6 +66,7 @@ abstract public class AbstractAd implements Ad {
 
         @Override
         public void adClosed() {
+            super.adClosed();
             adCallback.adClosed();
         }
     }
