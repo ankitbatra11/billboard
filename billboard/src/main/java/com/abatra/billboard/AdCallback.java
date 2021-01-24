@@ -62,7 +62,7 @@ public interface AdCallback {
 
         @Override
         public FullScreenContentCallback asFullScreenContentCallback() {
-            throw new UnsupportedOperationException();
+            return asFullScreenContentCallback();
         }
     }
 
