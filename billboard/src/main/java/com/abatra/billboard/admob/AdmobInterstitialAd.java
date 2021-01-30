@@ -53,7 +53,10 @@ public class AdmobInterstitialAd extends AdmobAd {
 
     @Override
     public void onDestroy() {
-        interstitialAd = null;
+        if (interstitialAd != null) {
+            interstitialAd.setFullScreenContentCallback(null);
+            interstitialAd = null;
+        }
         super.onDestroy();
     }
 }
