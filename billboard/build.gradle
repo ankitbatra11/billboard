@@ -40,7 +40,7 @@ dependencies {
     api group: 'com.google.guava', name: 'guava', version: GUAVA_VERSION
 
     implementation group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: ANDROIDX_LIFECYCLE_EXTENSIONS_VERSION
-    implementation group: 'com.github.ankitbatra11', name: 'wheelie', version: '1.9.2'
+    implementation group: 'com.github.ankitbatra11', name: 'wheelie', version: '3.0.5'
 
     implementation "com.google.ads.mediation:facebook:$ADMOB_FACEBOOK_MEDIATION_VERSION"
     implementation 'com.google.android.gms:play-services-ads:19.7.0'
