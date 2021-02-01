@@ -21,10 +21,6 @@ abstract public class AdmobAd extends AbstractAd {
         context = null;
     }
 
-    protected AdLoader.Builder newAdLoaderBuilder() {
-        return new AdLoader.Builder(context, id);
-    }
-
     protected AdRequest buildAdRequest() {
         return new AdRequest.Builder().build();
     }

@@ -1,27 +1,26 @@
 package com.abatra.billboard.admob;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.formats.NativeAdOptions;
-import com.google.android.gms.ads.formats.UnifiedNativeAd;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdOptions;
 
 import javax.annotation.Nullable;
 
-public class AdmobNativeAd extends AdmobAd {
+import timber.log.Timber;
 
-    private static final String LOG_TAG = "AdmobNativeAd";
+public class AdmobNativeAd extends AdmobAd {
 
     @Nullable
     private NativeAdOptions nativeAdOptions;
 
     @Nullable
-    private UnifiedNativeAd unifiedNativeAd;
+    private NativeAd nativeAd;
 
     public AdmobNativeAd(Context context, String id) {
         super(context, id);
@@ -34,14 +33,14 @@ public class AdmobNativeAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
-        AdLoader.Builder builder = newAdLoaderBuilder();
+        AdLoader.Builder builder = new AdLoader.Builder(context, id);
         if (nativeAdOptions != null) {
             builder.withNativeAdOptions(nativeAdOptions);
         }
-        builder.forUnifiedNativeAd(unifiedNativeAd ->
+        builder.forNativeAd(nativeAd ->
         {
-            Log.d(LOG_TAG, "adLoaded!");
-            this.unifiedNativeAd = unifiedNativeAd;
+            Timber.d("adLoaded!");
+            this.nativeAd = nativeAd;
             adCallback.adLoaded();
 
         }).withAdListener(new AdListener() {
@@ -49,7 +48,7 @@ public class AdmobNativeAd extends AdmobAd {
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
-                Log.i(LOG_TAG, "loadAdError=" + loadAdError.toString());
+                Timber.i("loadAdError=%s", loadAdError.toString());
                 adCallback.adLoadFailed();
             }
 
@@ -69,17 +68,17 @@ public class AdmobNativeAd extends AdmobAd {
 
     @Override
     public void render(AdRenderer adRenderer) {
-        if (unifiedNativeAd != null) {
+        if (nativeAd != null) {
             AdmobNativeAdRenderer admobNativeAdRenderer = (AdmobNativeAdRenderer) adRenderer;
-            admobNativeAdRenderer.render(unifiedNativeAd);
+            admobNativeAdRenderer.render(nativeAd);
         }
     }
 
     @Override
     public void onDestroy() {
-        if (unifiedNativeAd != null) {
-            unifiedNativeAd.destroy();
-            unifiedNativeAd = null;
+        if (nativeAd != null) {
+            nativeAd.destroy();
+            nativeAd = null;
         }
         nativeAdOptions = null;
         super.onDestroy();
