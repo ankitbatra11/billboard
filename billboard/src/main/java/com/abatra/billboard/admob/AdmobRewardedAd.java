@@ -34,7 +34,7 @@ public class AdmobRewardedAd extends AdmobAd {
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 AdmobRewardedAd.this.rewardedAd = null;
-                adCallback.adFailedToShow();
+                adCallback.adLoadFailed();
             }
         });
     }
