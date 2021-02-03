@@ -20,6 +20,8 @@ android {
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -46,6 +48,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
     implementation project(':billboard')
+    implementation group: 'com.github.ankitbatra11', name: 'wheelie', version: '3.1.6'
     implementation "com.google.ads.mediation:facebook:$ADMOB_FACEBOOK_MEDIATION_VERSION"
 
     implementation 'com.android.support:multidex:1.0.3'

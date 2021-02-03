@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Billboard Demo</string>
+    <string name="interstitial">Interstitial</string>
+    <string name="rewarded">Rewarded</string>
+    <string name="rewarded_interstitial">Rewarded Interstitial</string>
 </resources>

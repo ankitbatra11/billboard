@@ -7,6 +7,7 @@
     tools:context=".MainActivity">
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/native_card"
         android:layout_width="match_parent"
         android:layout_height="120dp"
         android:layout_margin="8dp"
@@ -89,5 +90,29 @@
         </com.google.android.gms.ads.nativead.NativeAdView>
 
     </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/interstitial_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/interstitial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/native_card" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/rewarded_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rewarded"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/interstitial_btn" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/rewarded_interstitial_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/rewarded_interstitial"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rewarded_btn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
