@@ -1,6 +1,5 @@
 package com.abatra.billboard.admob;
 
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,16 +14,14 @@ import javax.annotation.Nullable;
 
 public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
 
-    private final View nativeAdViewContainer;
-
-    @IdRes
-    private final int unifiedNativeAdViewId;
+    private final NativeAdView nativeAdView;
 
     @IdRes
     private final int headlineViewId;
 
     @IdRes
-    private final int bodyViewId;
+    @Nullable
+    private Integer bodyViewId;
 
     @IdRes
     @Nullable
@@ -38,14 +35,9 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     @Nullable
     private Integer mediaViewId;
 
-    public ViewAdmobNativeAdRenderer(@IdRes int headlineViewId,
-                                     View nativeAdViewContainer,
-                                     @IdRes int unifiedNativeAdViewId,
-                                     @IdRes int bodyViewId) {
+    public ViewAdmobNativeAdRenderer(NativeAdView nativeAdView, @IdRes int headlineViewId) {
+        this.nativeAdView = nativeAdView;
         this.headlineViewId = headlineViewId;
-        this.unifiedNativeAdViewId = unifiedNativeAdViewId;
-        this.nativeAdViewContainer = nativeAdViewContainer;
-        this.bodyViewId = bodyViewId;
     }
 
     public ViewAdmobNativeAdRenderer setIconViewId(@Nullable Integer iconViewId) {
@@ -63,42 +55,43 @@ public class ViewAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
         return this;
     }
 
+    public ViewAdmobNativeAdRenderer setBodyViewId(@Nullable Integer bodyViewId) {
+        this.bodyViewId = bodyViewId;
+        return this;
+    }
+
     @Override
     public void render(@Nonnull NativeAd nativeAd) {
 
-        NativeAdView nativeAdView = nativeAdViewContainer.findViewById(unifiedNativeAdViewId);
-
         if (iconViewId != null) {
-            ImageView imageView = nativeAdViewContainer.findViewById(iconViewId);
+            ImageView imageView = nativeAdView.findViewById(iconViewId);
             NativeAd.Image image = nativeAd.getIcon();
             if (image != null) {
                 imageView.setImageDrawable(image.getDrawable());
                 nativeAdView.setIconView(imageView);
-            } else {
-                imageView.setVisibility(View.GONE);
             }
         }
 
-        TextView headlineTextView = nativeAdViewContainer.findViewById(headlineViewId);
+        TextView headlineTextView = nativeAdView.findViewById(headlineViewId);
         headlineTextView.setText(nativeAd.getHeadline());
         nativeAdView.setHeadlineView(headlineTextView);
 
-        TextView bodyTextView = nativeAdViewContainer.findViewById(bodyViewId);
-        bodyTextView.setText(nativeAd.getBody());
-        nativeAdView.setBodyView(bodyTextView);
+        if (bodyViewId != null) {
+            TextView bodyTextView = nativeAdView.findViewById(bodyViewId);
+            bodyTextView.setText(nativeAd.getBody());
+            nativeAdView.setBodyView(bodyTextView);
+        }
 
         if (ctaViewId != null) {
-            TextView ctaTextView = nativeAdViewContainer.findViewById(ctaViewId);
+            TextView ctaTextView = nativeAdView.findViewById(ctaViewId);
             if (nativeAd.getCallToAction() != null) {
                 ctaTextView.setText(nativeAd.getCallToAction());
                 nativeAdView.setCallToActionView(ctaTextView);
-            } else {
-                ctaTextView.setVisibility(View.GONE);
             }
         }
 
         if (mediaViewId != null) {
-            MediaView mediaView = nativeAdViewContainer.findViewById(mediaViewId);
+            MediaView mediaView = nativeAdView.findViewById(mediaViewId);
             nativeAdView.setMediaView(mediaView);
         }
 
