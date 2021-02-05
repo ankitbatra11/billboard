@@ -21,6 +21,7 @@ import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
 import com.abatra.billboard.admob.BottomSheetDialogRewardedInterstitialAdOptIn;
 import com.abatra.billboard.admob.RewardedInterstitialAdOptIn;
 import com.abatra.billboard.admob.RewardedInterstitialAdOptOutTimer;
+import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -46,24 +47,10 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
         nativeAd.loadAd(new AdCallback.LogAdCallback() {
             @Override
             public void adLoaded() {
-                nativeAd.render((AdmobNativeAdRenderer) ad -> {
-
-                    if (ad.getIcon() != null) {
-                        binding.nativeAdIcon.setImageDrawable(ad.getIcon().getDrawable());
-                        binding.unifiedNativeAdView.setIconView(binding.nativeAdIcon);
-                    }
-
-                    binding.nativeAdTitle.setText(ad.getHeadline());
-                    binding.unifiedNativeAdView.setHeadlineView(binding.nativeAdTitle);
-
-                    binding.nativeAdSubtitle.setText(ad.getBody());
-                    binding.unifiedNativeAdView.setBodyView(binding.nativeAdSubtitle);
-
-                    binding.nativeAdCta.setText(ad.getCallToAction());
-                    binding.unifiedNativeAdView.setCallToActionView(binding.nativeAdCta);
-
-                    binding.unifiedNativeAdView.setNativeAd(ad);
-                });
+                nativeAd.render(new ViewAdmobNativeAdRenderer(binding.unifiedNativeAdView, R.id.native_ad_title)
+                        .setIconViewId(R.id.native_ad_icon)
+                        .setBodyViewId(R.id.native_ad_subtitle)
+                        .setCtaViewId(R.id.native_ad_cta));
             }
         });
 
