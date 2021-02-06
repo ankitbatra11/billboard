@@ -14,23 +14,28 @@ import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobNativeAd;
 import com.abatra.billboard.admob.AdmobRewardedAd;
 import com.abatra.billboard.admob.AdmobRewardedAdRenderer;
+import com.abatra.billboard.admob.AdmobRewardedInterstitialAd;
+import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
 import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
 
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements AppOpenAdActivity, ILifecycleOwner {
 
+    private ActivityMainBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        ActivityMainBinding binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
+        binding = ActivityMainBinding.inflate(LayoutInflater.from(this));
         setContentView(binding.getRoot());
 
         Ad nativeAd = new AdmobNativeAd(this, "ca-app-pub-3940256099942544/2247696110");
@@ -67,6 +72,26 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
                     });
                 }
             });
+        });
+
+        binding.rewardedInterstitialBtn.setOnClickListener(v -> loadRewardedInterstitialAd());
+    }
+
+    private void loadRewardedInterstitialAd() {
+        AdmobRewardedInterstitialAd interstitialAd = new AdmobRewardedInterstitialAd(this, "ca-app-pub-3940256099942544/5354046379");
+        interstitialAd.loadAd(new AdCallback.LogAdCallback() {
+            @Override
+            public void adLoaded() {
+                super.adLoaded();
+                interstitialAd.render((AdmobRewardedInterstitialAdRenderer) MainActivity.this::show);
+            }
+        });
+    }
+
+    private void show(RewardedInterstitialAd interstitialAd) {
+        interstitialAd.show(MainActivity.this, rewardItem -> {
+            Snackbar snackbar = Snackbar.make(binding.getRoot(), "User earned reward", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
         });
     }
 
