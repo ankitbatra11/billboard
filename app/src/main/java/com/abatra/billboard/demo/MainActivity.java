@@ -3,7 +3,6 @@ package com.abatra.billboard.demo;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,14 +12,8 @@ import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.admob.AdmobInterstitialAd;
 import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobNativeAd;
-import com.abatra.billboard.admob.AdmobNativeAdRenderer;
 import com.abatra.billboard.admob.AdmobRewardedAd;
 import com.abatra.billboard.admob.AdmobRewardedAdRenderer;
-import com.abatra.billboard.admob.AdmobRewardedInterstitialAd;
-import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
-import com.abatra.billboard.admob.BottomSheetDialogRewardedInterstitialAdOptIn;
-import com.abatra.billboard.admob.RewardedInterstitialAdOptIn;
-import com.abatra.billboard.admob.RewardedInterstitialAdOptOutTimer;
 import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
@@ -28,8 +21,6 @@ import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.material.snackbar.Snackbar;
-
-import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -69,58 +60,13 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
             admobRewardedAd.loadAd(new AdCallback.LogAdCallback() {
                 @Override
                 public void adLoaded() {
+                    Snackbar.make(binding.getRoot(), admobRewardedAd.getReward().toString(), Snackbar.LENGTH_INDEFINITE).show();
                     admobRewardedAd.render((AdmobRewardedAdRenderer) rewardedAd -> {
                         OnUserEarnedRewardListener listener = rewardItem -> Timber.d("reward=%s", rewardItem);
                         rewardedAd.show(MainActivity.this, listener);
                     });
                 }
             });
-        });
-
-        binding.rewardedInterstitialBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                String adUnitId = "ca-app-pub-3940256099942544/5354046379";
-                AdmobRewardedInterstitialAd rewardedInterstitialAd = new AdmobRewardedInterstitialAd(MainActivity.this, adUnitId);
-                rewardedInterstitialAd.loadAd(new AdCallback.LogAdCallback() {
-
-                    @Override
-                    public void adLoaded() {
-                        super.adLoaded();
-                        RewardedInterstitialAdOptOutTimer optOutTimer = new RewardedInterstitialAdOptOutTimer(5);
-                        BottomSheetDialogRewardedInterstitialAdOptIn optIn = new BottomSheetDialogRewardedInterstitialAdOptIn(optOutTimer);
-                        optIn.setTitle("Free Premium Upgrade")
-                                .setRewardDetails("Watch an ad to try premium upgrade for free")
-                                .setOptOutActionText("No thanks")
-                                .setOptOutTimeLeftMessageFactory(new BottomSheetDialogRewardedInterstitialAdOptIn.OptOutTimeLeftMessageFactory() {
-                                    @Override
-                                    public String createMessage(int seconds) {
-                                        return String.format(Locale.ENGLISH, "Video starts in %d second(s)", seconds);
-                                    }
-                                })
-                                .show(MainActivity.this, new RewardedInterstitialAdOptIn.Listener() {
-
-                                    @Override
-                                    public void onUserOptedOut() {
-                                        Snackbar.make(binding.getRoot(), "Opted out", Snackbar.LENGTH_SHORT).show();
-                                    }
-
-                                    @Override
-                                    public void onOptOutTimeEnded() {
-                                        rewardedInterstitialAd.render((AdmobRewardedInterstitialAdRenderer) ad -> {
-                                            MainActivity activity = MainActivity.this;
-                                            ad.show(activity, rewardItem -> {
-                                                String message = "User earned reward=" + rewardItem;
-                                                Snackbar.make(binding.getRoot(), message, Snackbar.LENGTH_SHORT).show();
-                                            });
-                                        });
-                                    }
-                                });
-                    }
-                });
-            }
         });
     }
 

@@ -11,7 +11,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
-public class AdmobRewardedAd extends AdmobAd {
+public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
 
     @Nullable
     private RewardedAd rewardedAd;
@@ -45,6 +45,14 @@ public class AdmobRewardedAd extends AdmobAd {
             AdmobRewardedAdRenderer renderer = (AdmobRewardedAdRenderer) adRenderer;
             renderer.render(rewardedAd);
         }
+    }
+
+    @Override
+    public Reward getReward() {
+        return rewardedAd != null
+                ? rewardedAd.getRewardItem() != null ? new AdmobReward(rewardedAd.getRewardItem()) : null
+                : null;
+
     }
 
     @Override
