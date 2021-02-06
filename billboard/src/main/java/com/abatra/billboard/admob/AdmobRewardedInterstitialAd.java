@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 
@@ -22,6 +23,10 @@ public class AdmobRewardedInterstitialAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(AdCallback adCallback) {
+        MobileAds.initialize(context, initializationStatus -> withMobileAdsInitializedLoadAd(adCallback));
+    }
+
+    private void withMobileAdsInitializedLoadAd(AdCallback adCallback) {
         RewardedInterstitialAd.load(context, id, buildAdRequest(), new RewardedInterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
