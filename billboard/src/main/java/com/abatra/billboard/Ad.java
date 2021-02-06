@@ -1,10 +1,11 @@
 package com.abatra.billboard;
 
 import androidx.lifecycle.Lifecycle;
-import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.OnLifecycleEvent;
 
-public interface Ad extends LifecycleObserver {
+import com.abatra.android.wheelie.lifecycle.ILifecycleObserver;
+
+public interface Ad extends ILifecycleObserver {
 
     void loadAd(AdCallback adCallback);
 
