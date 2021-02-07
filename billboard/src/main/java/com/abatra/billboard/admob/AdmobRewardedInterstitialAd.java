@@ -12,7 +12,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
 
-public class AdmobRewardedInterstitialAd extends AdmobAd {
+public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd {
 
     @Nullable
     private RewardedInterstitialAd rewardedInterstitialAd;
@@ -59,5 +59,15 @@ public class AdmobRewardedInterstitialAd extends AdmobAd {
             rewardedInterstitialAd = null;
         }
         super.onDestroy();
+    }
+
+    @Nullable
+    @Override
+    public Reward getReward() {
+        Reward reward = null;
+        if (rewardedInterstitialAd != null && rewardedInterstitialAd.getRewardItem() != null) {
+            reward = new AdmobReward(rewardedInterstitialAd.getRewardItem());
+        }
+        return reward;
     }
 }
