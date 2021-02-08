@@ -5,8 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
@@ -22,24 +22,24 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
     }
 
     @Override
-    protected void doLoadAd(AdCallback adCallback) {
-        MobileAds.initialize(context, initializationStatus -> withMobileAdsInitializedLoadAd(adCallback));
+    protected void doLoadAd(LoadAdRequest loadAdRequest) {
+        MobileAds.initialize(context, initializationStatus -> withMobileAdsInitializedLoadAd(loadAdRequest));
     }
 
-    private void withMobileAdsInitializedLoadAd(AdCallback adCallback) {
-        RewardedInterstitialAd.load(context, id, buildAdRequest(), new RewardedInterstitialAdLoadCallback() {
+    private void withMobileAdsInitializedLoadAd(LoadAdRequest loadAdRequest) {
+        RewardedInterstitialAd.load(context, id, buildAdRequest(loadAdRequest), new RewardedInterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
                 super.onAdLoaded(rewardedInterstitialAd);
                 AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = rewardedInterstitialAd;
-                adCallback.adLoaded();
+                loadAdRequest.getAdCallback().adLoaded();
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = null;
-                adCallback.adLoadFailed();
+                loadAdRequest.getAdCallback().adLoadFailed();
             }
         });
     }

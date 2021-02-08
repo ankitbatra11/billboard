@@ -11,12 +11,7 @@ abstract public class AbstractAd implements Ad {
 
     @Override
     public void loadAd(AdCallback adCallback) {
-        if (!isLoaded() && !isLoading()) {
-            loading.set(true);
-            doLoadAd(new AdCallbackWrapper(adCallback));
-        } else {
-            Timber.d("Not loading ad. loaded=" + isLoaded() + " loading=" + isLoading());
-        }
+        loadAd(new LoadAdRequest().setAdCallback(adCallback));
     }
 
     @Override
@@ -30,12 +25,22 @@ abstract public class AbstractAd implements Ad {
         return loading.get();
     }
 
-    protected abstract void doLoadAd(AdCallback adCallback);
-
     @Override
     public boolean isLoaded() {
         return loaded.get();
     }
+
+    @Override
+    public void loadAd(LoadAdRequest loadAdRequest) {
+        if (!isLoaded() && !isLoading()) {
+            loading.set(true);
+            doLoadAd(loadAdRequest.setAdCallback(new AdCallbackWrapper(loadAdRequest.getAdCallback())));
+        } else {
+            Timber.d("Not loading ad. loaded=" + isLoaded() + " loading=" + isLoading());
+        }
+    }
+
+    protected abstract void doLoadAd(LoadAdRequest loadAdRequest);
 
     private class AdCallbackWrapper extends AdCallback.LogAdCallback {
 

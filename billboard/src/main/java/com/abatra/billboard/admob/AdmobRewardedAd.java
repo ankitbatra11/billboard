@@ -5,8 +5,8 @@ import android.content.Context;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
@@ -21,20 +21,20 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     }
 
     @Override
-    protected void doLoadAd(AdCallback adCallback) {
-        RewardedAd.load(context, id, buildAdRequest(), new RewardedAdLoadCallback() {
+    protected void doLoadAd(LoadAdRequest loadAdRequest) {
+        RewardedAd.load(context, id, buildAdRequest(loadAdRequest), new RewardedAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 super.onAdLoaded(rewardedAd);
                 AdmobRewardedAd.this.rewardedAd = rewardedAd;
-                adCallback.adLoaded();
+                loadAdRequest.getAdCallback().adLoaded();
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 AdmobRewardedAd.this.rewardedAd = null;
-                adCallback.adLoadFailed();
+                loadAdRequest.getAdCallback().adLoadFailed();
             }
         });
     }

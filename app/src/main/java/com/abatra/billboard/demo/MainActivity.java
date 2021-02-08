@@ -9,6 +9,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.abatra.android.wheelie.lifecycle.ILifecycleOwner;
 import com.abatra.billboard.Ad;
 import com.abatra.billboard.AdCallback;
+import com.abatra.billboard.LoadAdRequest;
+import com.abatra.billboard.admob.AdmobBannerAd;
+import com.abatra.billboard.admob.AdmobBannerAdRenderer;
 import com.abatra.billboard.admob.AdmobInterstitialAd;
 import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobNativeAd;
@@ -19,11 +22,14 @@ import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
 import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
+import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
+
+import javax.annotation.Nonnull;
 
 import timber.log.Timber;
 
@@ -75,6 +81,18 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
         });
 
         binding.rewardedInterstitialBtn.setOnClickListener(v -> loadRewardedInterstitialAd());
+
+        AdmobBannerAd admobBannerAd = AdmobBannerAd.adaptive(this,"ca-app-pub-3940256099942544/6300978111");
+        admobBannerAd.loadAd(new LoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
+            @Override
+            public void adLoaded() {
+                super.adLoaded();
+                admobBannerAd.render((AdmobBannerAdRenderer) adView -> {
+                    binding.bannerAdContainer.removeAllViews();
+                    binding.bannerAdContainer.addView(adView);
+                });
+            }
+        }));
     }
 
     private void loadRewardedInterstitialAd() {

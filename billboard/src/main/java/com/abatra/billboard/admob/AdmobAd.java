@@ -1,10 +1,15 @@
 package com.abatra.billboard.admob;
 
 import android.content.Context;
+import android.os.Bundle;
 
 import com.abatra.billboard.AbstractAd;
-import com.google.android.gms.ads.AdLoader;
+import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.mediation.MediationExtrasReceiver;
+
+import java.util.Map;
+import java.util.Set;
 
 abstract public class AdmobAd extends AbstractAd {
 
@@ -21,7 +26,12 @@ abstract public class AdmobAd extends AbstractAd {
         context = null;
     }
 
-    protected AdRequest buildAdRequest() {
-        return new AdRequest.Builder().build();
+    protected AdRequest buildAdRequest(LoadAdRequest loadAdRequest) {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        Set<Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle>> entries = loadAdRequest.getNetworkExtrasBundle().entrySet();
+        for (Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle> extrasByAdapter : entries) {
+            builder.addNetworkExtrasBundle(extrasByAdapter.getKey(), extrasByAdapter.getValue());
+        }
+        return builder.build();
     }
 }

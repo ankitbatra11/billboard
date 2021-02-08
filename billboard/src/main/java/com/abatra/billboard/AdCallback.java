@@ -25,6 +25,9 @@ public interface AdCallback {
         return new FullScreenContentCallbackAdapter(this);
     }
 
+    default void onAdImpression() {
+    }
+
     class LogAdCallback implements AdCallback {
 
         public LogAdCallback() {
