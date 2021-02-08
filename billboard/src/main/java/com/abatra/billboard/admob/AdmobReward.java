@@ -2,6 +2,7 @@ package com.abatra.billboard.admob;
 
 import androidx.annotation.NonNull;
 
+import com.abatra.billboard.Reward;
 import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.common.base.MoreObjects;
 

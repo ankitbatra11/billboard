@@ -28,7 +28,8 @@ abstract public class AdmobAd extends AbstractAd {
 
     protected AdRequest buildAdRequest(LoadAdRequest loadAdRequest) {
         AdRequest.Builder builder = new AdRequest.Builder();
-        Set<Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle>> entries = loadAdRequest.getNetworkExtrasBundle().entrySet();
+        AdmobLoadAdRequest admobLoadAdRequest = (AdmobLoadAdRequest) loadAdRequest;
+        Set<Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle>> entries = admobLoadAdRequest.getNetworkExtrasBundle().entrySet();
         for (Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle> extrasByAdapter : entries) {
             builder.addNetworkExtrasBundle(extrasByAdapter.getKey(), extrasByAdapter.getValue());
         }

@@ -1,8 +1,6 @@
-package com.abatra.billboard.admob;
+package com.abatra.billboard;
 
 import androidx.annotation.Nullable;
-
-import com.abatra.billboard.Ad;
 
 public interface IRewardedAd extends Ad {
     @Nullable

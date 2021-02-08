@@ -1,4 +1,4 @@
-package com.abatra.billboard.admob;
+package com.abatra.billboard;
 
 public interface Reward {
 
