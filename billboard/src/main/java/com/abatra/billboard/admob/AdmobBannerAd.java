@@ -4,8 +4,8 @@ import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
-import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.common.base.Supplier;
@@ -37,12 +37,12 @@ public class AdmobBannerAd extends AdmobAd {
     }
 
     @Override
-    protected void doLoadAd(AdCallback adCallback) {
+    protected void doLoadAd(LoadAdRequest loadAdRequest) {
         adView = new AdView(context);
         adView.setAdUnitId(id);
-        adView.setAdListener(new AdListenerAdapter(adCallback));
+        adView.setAdListener(new AdListenerAdapter(loadAdRequest.getAdCallback()));
         adView.setAdSize(adSizeSupplier.get());
-        adView.loadAd(buildAdRequest());
+        adView.loadAd(buildAdRequest(loadAdRequest));
     }
 
     @Override

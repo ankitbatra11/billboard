@@ -6,11 +6,14 @@ import android.util.Log;
 import com.abatra.billboard.AbstractAd;
 import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 
 import javax.annotation.Nullable;
+
+import timber.log.Timber;
 
 import static com.google.android.gms.ads.appopen.AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT;
 
@@ -32,7 +35,7 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     public static AdmobAppOpenAd create(Application application, String adUnitId) {
 
-        MobileAds.initialize(application, initializationStatus -> Log.i(LOG_TAG, " MobileAds.initialized"));
+        MobileAds.initialize(application, initializationStatus -> Timber.i(" MobileAds.initialized"));
 
         AdmobAppOpenAd admobAppOpenAd = new AdmobAppOpenAd(application, adUnitId);
         admobAppOpenAd.appOpenAdDisplayer = AppOpenAdDisplayer.create(application, admobAppOpenAd);
@@ -40,8 +43,8 @@ public class AdmobAppOpenAd extends AbstractAd {
     }
 
     @Override
-    protected void doLoadAd(AdCallback adCallback) {
-        appOpenAdReceiver = new AppOpenAdReceiver(adCallback);
+    protected void doLoadAd(LoadAdRequest loadAdRequest) {
+        appOpenAdReceiver = new AppOpenAdReceiver(loadAdRequest.getAdCallback());
         AppOpenAd.load(application, adUnitId, new AdRequest.Builder().build(), APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdReceiver);
     }
 
