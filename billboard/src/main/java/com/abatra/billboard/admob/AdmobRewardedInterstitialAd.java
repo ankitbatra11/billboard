@@ -6,7 +6,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.IRewardedAd;
 import com.abatra.billboard.LoadAdRequest;
+import com.abatra.billboard.Reward;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;

@@ -1,5 +1,7 @@
 package com.abatra.billboard;
 
+import com.abatra.billboard.admob.AdmobLoadAdRequest;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
@@ -11,7 +13,7 @@ abstract public class AbstractAd implements Ad {
 
     @Override
     public void loadAd(AdCallback adCallback) {
-        loadAd(new LoadAdRequest().setAdCallback(adCallback));
+        loadAd(new AdmobLoadAdRequest().setAdCallback(adCallback));
     }
 
     @Override
