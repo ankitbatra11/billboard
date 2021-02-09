@@ -1,6 +1,7 @@
 package com.abatra.billboard;
 
 import com.abatra.billboard.admob.AdmobLoadAdRequest;
+import com.abatra.billboard.admob.banner.AdaptiveBannerAdCallback;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -44,7 +45,7 @@ abstract public class AbstractAd implements Ad {
 
     protected abstract void doLoadAd(LoadAdRequest loadAdRequest);
 
-    private class AdCallbackWrapper extends AdCallback.LogAdCallback {
+    private class AdCallbackWrapper extends AdCallback.LogAdCallback implements AdaptiveBannerAdCallback {
 
         private final AdCallback adCallback;
 
@@ -75,6 +76,29 @@ abstract public class AbstractAd implements Ad {
         public void adClosed() {
             super.adClosed();
             adCallback.adClosed();
+        }
+
+        @Override
+        public void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
+            adCallback.onAdaptiveBannerContainerMinHeightLoaded(minHeight);
+        }
+
+        @Override
+        public void adClicked() {
+            super.adClicked();
+            adCallback.adClicked();
+        }
+
+        @Override
+        public void adDisplayed() {
+            super.adDisplayed();
+            adCallback.adDisplayed();
+        }
+
+        @Override
+        public void adFailedToShow() {
+            super.adFailedToShow();
+            adCallback.adFailedToShow();
         }
     }
 }

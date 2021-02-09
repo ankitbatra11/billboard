@@ -1,11 +1,12 @@
 package com.abatra.billboard;
 
+import com.abatra.billboard.admob.banner.AdaptiveBannerAdCallback;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.FullScreenContentCallback;
 
 import timber.log.Timber;
 
-public interface AdCallback {
+public interface AdCallback extends AdaptiveBannerAdCallback {
 
     AdCallback LOG = new LogAdCallback();
 
@@ -61,6 +62,11 @@ public interface AdCallback {
         @Override
         public void adFailedToShow() {
             Timber.d("ad failed to show");
+        }
+
+        @Override
+        public void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
+            Timber.d("onAdaptiveBannerContainerMinHeightLoaded minHeight=%d", minHeight);
         }
     }
 

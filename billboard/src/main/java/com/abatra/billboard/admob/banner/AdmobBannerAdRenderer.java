@@ -1,4 +1,4 @@
-package com.abatra.billboard.admob;
+package com.abatra.billboard.admob.banner;
 
 import com.abatra.billboard.AdRenderer;
 import com.google.android.gms.ads.AdView;

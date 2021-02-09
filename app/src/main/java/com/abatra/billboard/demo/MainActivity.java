@@ -9,8 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.abatra.android.wheelie.lifecycle.ILifecycleOwner;
 import com.abatra.billboard.Ad;
 import com.abatra.billboard.AdCallback;
-import com.abatra.billboard.admob.AdmobBannerAd;
-import com.abatra.billboard.admob.AdmobBannerAdRenderer;
 import com.abatra.billboard.admob.AdmobInterstitialAd;
 import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobLoadAdRequest;
@@ -21,6 +19,9 @@ import com.abatra.billboard.admob.AdmobRewardedInterstitialAd;
 import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
 import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
+import com.abatra.billboard.admob.banner.AdmobAdaptiveBannerAd;
+import com.abatra.billboard.admob.banner.AdmobBannerAd;
+import com.abatra.billboard.admob.banner.AdmobBannerAdRenderer;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -28,6 +29,9 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.concurrent.Callable;
+
+import bolts.Task;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity implements AppOpenAdActivity, ILifecycleOwner {
@@ -79,15 +83,26 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
         binding.rewardedInterstitialBtn.setOnClickListener(v -> loadRewardedInterstitialAd());
 
-        AdmobBannerAd admobBannerAd = AdmobBannerAd.adaptive(this, "ca-app-pub-3940256099942544/6300978111");
+        AdmobBannerAd admobBannerAd = AdmobAdaptiveBannerAd.withCurrentOrientationAnchoredAdSize(this, "ca-app-pub-3940256099942544/6300978111");
         admobBannerAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
+
             @Override
             public void adLoaded() {
-                super.adLoaded();
                 admobBannerAd.render((AdmobBannerAdRenderer) adView -> {
                     binding.bannerAdContainer.removeAllViews();
                     binding.bannerAdContainer.addView(adView);
+                    binding.bannerAdContainer.setMinimumHeight(0);
                 });
+            }
+
+            @Override
+            public void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
+                Task.call(() ->
+                {
+                    binding.bannerAdContainer.setMinimumHeight(minHeight);
+                    return null;
+
+                }, Task.UI_THREAD_EXECUTOR);
             }
         }));
     }
