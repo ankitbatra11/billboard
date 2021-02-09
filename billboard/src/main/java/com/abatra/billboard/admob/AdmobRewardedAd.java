@@ -42,6 +42,11 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     }
 
     @Override
+    public boolean isLoaded() {
+        return rewardedAd != null;
+    }
+
+    @Override
     public void render(AdRenderer adRenderer) {
         if (rewardedAd != null) {
             AdmobRewardedAdRenderer renderer = (AdmobRewardedAdRenderer) adRenderer;
