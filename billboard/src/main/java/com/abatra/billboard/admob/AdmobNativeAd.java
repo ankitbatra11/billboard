@@ -10,11 +10,15 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nullable;
 
 import timber.log.Timber;
 
 public class AdmobNativeAd extends AdmobAd {
+
+    private final AtomicBoolean loaded = new AtomicBoolean(false);
 
     @Nullable
     private NativeAdOptions nativeAdOptions;
@@ -72,6 +76,7 @@ public class AdmobNativeAd extends AdmobAd {
 
             @Override
             public void onAdLoaded() {
+                loaded.set(true);
                 super.onAdLoaded();
                 loadAdRequest.getAdCallback().adLoaded();
             }
@@ -82,6 +87,11 @@ public class AdmobNativeAd extends AdmobAd {
                 loadAdRequest.getAdCallback().onAdImpression();
             }
         }).build().loadAd(buildAdRequest(loadAdRequest));
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return loaded.get();
     }
 
     @Override
@@ -99,6 +109,7 @@ public class AdmobNativeAd extends AdmobAd {
             nativeAd = null;
         }
         nativeAdOptions = null;
+        loaded.set(false);
         super.onDestroy();
     }
 }

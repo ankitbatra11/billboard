@@ -10,11 +10,14 @@ import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.google.common.base.Supplier;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import javax.annotation.Nullable;
 
 public class AdmobBannerAd extends AdmobAd {
 
     private final Supplier<AdSize> adSizeSupplier;
+    private final AtomicBoolean loaded = new AtomicBoolean(false);
     @Nullable
     private AdView adView;
 
@@ -27,9 +30,20 @@ public class AdmobBannerAd extends AdmobAd {
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
         adView = new AdView(context);
         adView.setAdUnitId(id);
-        adView.setAdListener(new AdListenerAdapter(loadAdRequest.getAdCallback()));
+        adView.setAdListener(new AdListenerAdapter(loadAdRequest.getAdCallback()) {
+            @Override
+            public void onAdLoaded() {
+                loaded.set(true);
+                super.onAdLoaded();
+            }
+        });
         adView.setAdSize(adSizeSupplier.get());
         adView.loadAd(buildAdRequest(loadAdRequest));
+    }
+
+    @Override
+    public boolean isLoaded() {
+        return loaded.get();
     }
 
     @Override
@@ -46,6 +60,7 @@ public class AdmobBannerAd extends AdmobAd {
             adView.destroy();
             adView = null;
         }
+        loaded.set(false);
         super.onDestroy();
     }
 }

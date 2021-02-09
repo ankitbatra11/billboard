@@ -24,6 +24,7 @@ abstract public class AdmobAd extends AbstractAd {
     @Override
     public void onDestroy() {
         context = null;
+        super.onDestroy();
     }
 
     protected AdRequest buildAdRequest(LoadAdRequest loadAdRequest) {

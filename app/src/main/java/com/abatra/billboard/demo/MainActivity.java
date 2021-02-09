@@ -29,8 +29,6 @@ import com.google.android.gms.ads.appopen.AppOpenAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.concurrent.Callable;
-
 import bolts.Task;
 import timber.log.Timber;
 
@@ -47,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
         Ad nativeAd = new AdmobNativeAd(this, "ca-app-pub-3940256099942544/2247696110");
         getLifecycle().addObserver(nativeAd);
-        nativeAd.loadAd(new AdCallback.LogAdCallback() {
+        nativeAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
             @Override
             public void adLoaded() {
                 nativeAd.render(new ViewAdmobNativeAdRenderer(binding.unifiedNativeAdView, R.id.native_ad_title)
@@ -55,21 +53,21 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
                         .setBodyViewId(R.id.native_ad_subtitle)
                         .setCtaViewId(R.id.native_ad_cta));
             }
-        });
+        }));
 
         binding.interstitialBtn.setOnClickListener(v -> {
             AdmobInterstitialAd admobInterstitialAd = new AdmobInterstitialAd(MainActivity.this, "ca-app-pub-3940256099942544/1033173712");
-            admobInterstitialAd.loadAd(new AdCallback.LogAdCallback() {
+            admobInterstitialAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
                 @Override
                 public void adLoaded() {
                     admobInterstitialAd.render((AdmobInterstitialAdRenderer) interstitialAd -> interstitialAd.show(MainActivity.this));
                 }
-            });
+            }));
         });
 
         binding.rewardedBtn.setOnClickListener(v -> {
             AdmobRewardedAd admobRewardedAd = new AdmobRewardedAd(MainActivity.this, "ca-app-pub-3940256099942544/5224354917");
-            admobRewardedAd.loadAd(new AdCallback.LogAdCallback() {
+            admobRewardedAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
                 @Override
                 public void adLoaded() {
                     Snackbar.make(binding.getRoot(), admobRewardedAd.getReward().toString(), Snackbar.LENGTH_INDEFINITE).show();
@@ -78,7 +76,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
                         rewardedAd.show(MainActivity.this, listener);
                     });
                 }
-            });
+            }));
         });
 
         binding.rewardedInterstitialBtn.setOnClickListener(v -> loadRewardedInterstitialAd());
@@ -109,13 +107,13 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
     private void loadRewardedInterstitialAd() {
         AdmobRewardedInterstitialAd interstitialAd = new AdmobRewardedInterstitialAd(this, "ca-app-pub-3940256099942544/5354046379");
-        interstitialAd.loadAd(new AdCallback.LogAdCallback() {
+        interstitialAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
             @Override
             public void adLoaded() {
                 super.adLoaded();
                 interstitialAd.render((AdmobRewardedInterstitialAdRenderer) MainActivity.this::show);
             }
-        });
+        }));
     }
 
     private void show(RewardedInterstitialAd interstitialAd) {

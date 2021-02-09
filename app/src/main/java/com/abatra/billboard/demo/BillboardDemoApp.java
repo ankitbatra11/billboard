@@ -3,7 +3,7 @@ package com.abatra.billboard.demo;
 import androidx.multidex.MultiDexApplication;
 
 import com.abatra.billboard.Ad;
-import com.abatra.billboard.AdCallback;
+import com.abatra.billboard.admob.AdmobLoadAdRequest;
 import com.abatra.billboard.admob.appopenad.AdmobAppOpenAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
@@ -27,7 +27,7 @@ public class BillboardDemoApp extends MultiDexApplication {
 
         if (appOpenAd == null) {
             appOpenAd = AdmobAppOpenAd.create(this, "ca-app-pub-3940256099942544/3419835294");
-            appOpenAd.loadAd(AdCallback.LOG);
+            appOpenAd.loadAd(new AdmobLoadAdRequest());
         }
     }
 }
