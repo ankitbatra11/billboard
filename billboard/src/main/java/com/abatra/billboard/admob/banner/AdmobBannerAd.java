@@ -57,6 +57,7 @@ public class AdmobBannerAd extends AdmobAd {
     @Override
     public void onDestroy() {
         if (adView != null) {
+            adView.setAdListener(null);
             adView.destroy();
             adView = null;
         }
