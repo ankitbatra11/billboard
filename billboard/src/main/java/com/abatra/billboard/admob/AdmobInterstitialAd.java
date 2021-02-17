@@ -22,7 +22,7 @@ public class AdmobInterstitialAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        InterstitialAd.load(context, id, buildAdRequest(loadAdRequest), new InterstitialAdLoadCallback() {
+        InterstitialAd.load(requireContext(), id, buildAdRequest(loadAdRequest), new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 super.onAdLoaded(interstitialAd);

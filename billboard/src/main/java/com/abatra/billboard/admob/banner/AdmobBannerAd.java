@@ -28,7 +28,7 @@ public class AdmobBannerAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        adView = new AdView(context);
+        adView = new AdView(requireContext());
         adView.setAdUnitId(id);
         adView.setAdListener(new AdListenerAdapter(loadAdRequest.getAdCallback()) {
             @Override

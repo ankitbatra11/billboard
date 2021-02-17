@@ -24,7 +24,7 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        RewardedAd.load(context, id, buildAdRequest(loadAdRequest), new RewardedAdLoadCallback() {
+        RewardedAd.load(requireContext(), id, buildAdRequest(loadAdRequest), new RewardedAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 super.onAdLoaded(rewardedAd);
