@@ -57,7 +57,7 @@ public class AdmobAdaptiveBannerAd extends AdmobBannerAd {
     }
 
     private int loadBannerContainerMinHeight() {
-        WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        WindowManager windowManager = (WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE);
         DisplayMetrics outMetrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(outMetrics);
         return (int) (outMetrics.heightPixels * 0.15);

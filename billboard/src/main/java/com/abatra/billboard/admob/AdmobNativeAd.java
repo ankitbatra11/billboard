@@ -37,7 +37,7 @@ public class AdmobNativeAd extends AdmobAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        AdLoader.Builder builder = new AdLoader.Builder(context, id);
+        AdLoader.Builder builder = new AdLoader.Builder(getContext().orElseThrow(IllegalStateException::new), id);
         if (nativeAdOptions != null) {
             builder.withNativeAdOptions(nativeAdOptions);
         }

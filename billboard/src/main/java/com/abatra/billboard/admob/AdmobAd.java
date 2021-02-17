@@ -3,22 +3,35 @@ package com.abatra.billboard.admob;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.abatra.billboard.AbstractAd;
 import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.mediation.MediationExtrasReceiver;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 abstract public class AdmobAd extends AbstractAd {
 
-    protected Context context;
+    @Nullable
+    private Context context;
     protected final String id;
 
-    protected AdmobAd(Context context, String id) {
+    protected AdmobAd(@NonNull Context context, String id) {
         this.context = context;
         this.id = id;
+    }
+
+    protected Optional<Context> getContext() {
+        return Optional.ofNullable(context);
+    }
+
+    protected Context requireContext() {
+        return getContext().orElseThrow(IllegalStateException::new);
     }
 
     @Override
@@ -35,5 +48,10 @@ abstract public class AdmobAd extends AbstractAd {
             builder.addNetworkExtrasBundle(extrasByAdapter.getKey(), extrasByAdapter.getValue());
         }
         return builder.build();
+    }
+
+    /* For testing */
+    void setContext(@Nullable Context context) {
+        this.context = context;
     }
 }

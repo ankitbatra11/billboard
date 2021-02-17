@@ -9,10 +9,14 @@ import com.abatra.billboard.AdRenderer;
 import com.abatra.billboard.IRewardedAd;
 import com.abatra.billboard.LoadAdRequest;
 import com.abatra.billboard.Reward;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAdLoadCallback;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd {
 
@@ -25,56 +29,63 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        MobileAds.initialize(context, initializationStatus -> withMobileAdsInitializedLoadAd(loadAdRequest));
+        MobileAds.initialize(requireContext(), initializationStatus -> withMobileAdsInitializedLoadAd(loadAdRequest));
     }
 
     private void withMobileAdsInitializedLoadAd(LoadAdRequest loadAdRequest) {
-        RewardedInterstitialAd.load(context, id, buildAdRequest(loadAdRequest), new RewardedInterstitialAdLoadCallback() {
-            @Override
-            public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
-                super.onAdLoaded(rewardedInterstitialAd);
-                AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = rewardedInterstitialAd;
-                loadAdRequest.getAdCallback().adLoaded();
-            }
+        getContext().ifPresent(context -> {
+            AdRequest adRequest = buildAdRequest(loadAdRequest);
+            RewardedInterstitialAd.load(context, id, adRequest, new RewardedInterstitialAdLoadCallback() {
 
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                super.onAdFailedToLoad(loadAdError);
-                AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = null;
-                loadAdRequest.getAdCallback().adLoadFailed();
-            }
+                @Override
+                public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
+                    super.onAdLoaded(rewardedInterstitialAd);
+                    AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = rewardedInterstitialAd;
+                    loadAdRequest.getAdCallback().adLoaded();
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    super.onAdFailedToLoad(loadAdError);
+                    AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = null;
+                    loadAdRequest.getAdCallback().adLoadFailed();
+                }
+            });
         });
     }
 
     @Override
     public boolean isLoaded() {
-        return rewardedInterstitialAd != null;
+        return getRewardedInterstitialAd()
+                .map(Objects::nonNull)
+                .orElse(false);
+    }
+
+    private Optional<RewardedInterstitialAd> getRewardedInterstitialAd() {
+        return Optional.ofNullable(rewardedInterstitialAd);
     }
 
     @Override
     public void render(AdRenderer adRenderer) {
-        if (rewardedInterstitialAd != null) {
+        getRewardedInterstitialAd().ifPresent(rewardedInterstitialAd -> {
             AdmobRewardedInterstitialAdRenderer renderer = (AdmobRewardedInterstitialAdRenderer) adRenderer;
             renderer.render(rewardedInterstitialAd);
-        }
+        });
     }
 
     @Override
     public void onDestroy() {
-        if (rewardedInterstitialAd != null) {
-            rewardedInterstitialAd.setFullScreenContentCallback(null);
-            rewardedInterstitialAd = null;
-        }
+        getRewardedInterstitialAd().ifPresent(ad -> ad.setFullScreenContentCallback(null));
+        rewardedInterstitialAd = null;
         super.onDestroy();
     }
 
     @Nullable
     @Override
     public Reward getReward() {
-        Reward reward = null;
-        if (rewardedInterstitialAd != null && rewardedInterstitialAd.getRewardItem() != null) {
-            reward = new AdmobReward(rewardedInterstitialAd.getRewardItem());
-        }
-        return reward;
+        return getRewardedInterstitialAd()
+                .map(RewardedInterstitialAd::getRewardItem)
+                .map(AdmobReward::new)
+                .orElse(null);
     }
 }
