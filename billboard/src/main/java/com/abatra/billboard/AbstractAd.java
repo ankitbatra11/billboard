@@ -2,6 +2,8 @@ package com.abatra.billboard;
 
 import com.abatra.billboard.admob.banner.AdaptiveBannerAdCallback;
 
+import java.lang.ref.WeakReference;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import timber.log.Timber;
@@ -43,24 +45,28 @@ abstract public class AbstractAd implements Ad {
 
     private class AdCallbackWrapper extends AdCallback.LogAdCallback implements AdaptiveBannerAdCallback {
 
-        private final AdCallback adCallback;
+        private final WeakReference<AdCallback> adCallback;
 
         private AdCallbackWrapper(AdCallback adCallback) {
-            this.adCallback = adCallback;
+            this.adCallback = new WeakReference<>(adCallback);
+        }
+
+        private Optional<AdCallback> getAdCallback() {
+            return Optional.ofNullable(adCallback.get());
         }
 
         @Override
         public void adLoaded() {
             super.adLoaded();
             onAdResponse();
-            adCallback.adLoaded();
+            getAdCallback().ifPresent(AdCallback::adLoaded);
         }
 
         @Override
         public void adLoadFailed() {
             super.adLoadFailed();
             onAdResponse();
-            adCallback.adLoadFailed();
+            getAdCallback().ifPresent(AdCallback::adLoadFailed);
         }
 
         private void onAdResponse() {
@@ -70,30 +76,30 @@ abstract public class AbstractAd implements Ad {
         @Override
         public void adClosed() {
             super.adClosed();
-            adCallback.adClosed();
+            getAdCallback().ifPresent(AdCallback::adClosed);
         }
 
         @Override
         public void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
-            adCallback.onAdaptiveBannerContainerMinHeightLoaded(minHeight);
+            getAdCallback().ifPresent(ac -> ac.onAdaptiveBannerContainerMinHeightLoaded(minHeight));
         }
 
         @Override
         public void adClicked() {
             super.adClicked();
-            adCallback.adClicked();
+            getAdCallback().ifPresent(AdCallback::adClicked);
         }
 
         @Override
         public void adDisplayed() {
             super.adDisplayed();
-            adCallback.adDisplayed();
+            getAdCallback().ifPresent(AdCallback::adDisplayed);
         }
 
         @Override
         public void adFailedToShow() {
             super.adFailedToShow();
-            adCallback.adFailedToShow();
+            getAdCallback().ifPresent(AdCallback::adFailedToShow);
         }
     }
 }
