@@ -52,12 +52,12 @@ android {
 
 dependencies {
 
-    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.5'
 
     api group: 'com.google.guava', name: 'guava', version: GUAVA_VERSION
     api group: 'com.parse.bolts', name: 'bolts-tasks', version: '1.4.0'
     api group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: ANDROIDX_LIFECYCLE_EXTENSIONS_VERSION
-    api group: 'com.github.ankitbatra11', name: 'wheelie', version: '3.2.1'
+    api group: 'com.github.ankitbatra11', name: 'wheelie', version: '4.18.0'
     api group: 'com.android.support.constraint', name: 'constraint-layout', version: '2.0.4'
     api group: 'com.google.android.material', name: 'material', version: '1.3.0'
 
