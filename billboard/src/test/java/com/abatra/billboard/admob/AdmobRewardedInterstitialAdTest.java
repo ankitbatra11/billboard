@@ -56,7 +56,7 @@ public class AdmobRewardedInterstitialAdTest {
             mobileAdsMockedStatic.verify(() -> MobileAds.initialize(same(getApplicationContext()),
                     initializationCompleteListenerArgumentCaptor.capture()));
 
-            admobRewardedInterstitialAd.setContext(null);
+            admobRewardedInterstitialAd.context = null;
 
             initializationCompleteListenerArgumentCaptor.getValue().onInitializationComplete(mockedInitializationStatus);
 

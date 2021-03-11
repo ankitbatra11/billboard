@@ -3,6 +3,7 @@ package com.abatra.billboard.admob;
 import android.content.Context;
 import android.os.Bundle;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -18,7 +19,7 @@ import java.util.Set;
 abstract public class AdmobAd extends AbstractAd {
 
     @Nullable
-    private Context context;
+    Context context;
     protected final String id;
 
     protected AdmobAd(@NonNull Context context, String id) {
@@ -35,6 +36,7 @@ abstract public class AdmobAd extends AbstractAd {
     }
 
     @Override
+    @CallSuper
     public void onDestroy() {
         context = null;
         super.onDestroy();
@@ -50,8 +52,12 @@ abstract public class AdmobAd extends AbstractAd {
         return builder.build();
     }
 
-    /* For testing */
-    void setContext(@Nullable Context context) {
-        this.context = context;
+    @NonNull
+    @Override
+    public String toString() {
+        return "AdmobAd{" +
+                "class=" + getClass().getSimpleName() +
+                ", id='" + id + '\'' +
+                '}';
     }
 }

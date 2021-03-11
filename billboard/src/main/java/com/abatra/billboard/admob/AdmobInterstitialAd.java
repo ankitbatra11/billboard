@@ -11,6 +11,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 
+import java.util.Optional;
+
 public class AdmobInterstitialAd extends AdmobAd {
 
     @Nullable
@@ -27,36 +29,38 @@ public class AdmobInterstitialAd extends AdmobAd {
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 super.onAdLoaded(interstitialAd);
                 AdmobInterstitialAd.this.interstitialAd = interstitialAd;
-                loadAdRequest.getAdCallback().adLoaded();
+                loadAdRequest.getAdCallback().onLoaded(AdmobInterstitialAd.this);
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
-                loadAdRequest.getAdCallback().adLoadFailed();
+                loadAdRequest.getAdCallback().onLoadFailed(AdmobInterstitialAd.this);
             }
         });
     }
 
     @Override
     public boolean isLoaded() {
-        return interstitialAd != null;
+        return getInterstitialAd().isPresent();
+    }
+
+    private Optional<InterstitialAd> getInterstitialAd() {
+        return Optional.ofNullable(interstitialAd);
     }
 
     @Override
     public void render(AdRenderer adRenderer) {
-        if (interstitialAd != null) {
+        getInterstitialAd().ifPresent(interstitialAd -> {
             AdmobInterstitialAdRenderer interstitialAdRenderer = (AdmobInterstitialAdRenderer) adRenderer;
             interstitialAdRenderer.render(interstitialAd);
-        }
+        });
     }
 
     @Override
     public void onDestroy() {
-        if (interstitialAd != null) {
-            interstitialAd.setFullScreenContentCallback(null);
-            interstitialAd = null;
-        }
+        getInterstitialAd().ifPresent(interstitialAd -> interstitialAd.setFullScreenContentCallback(null));
+        interstitialAd = null;
         super.onDestroy();
     }
 }

@@ -1,15 +1,15 @@
 package com.abatra.billboard.admob.appopenad;
 
 import android.app.Application;
-import android.util.Log;
 
 import com.abatra.billboard.AbstractAd;
-import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.AdRenderer;
 import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.appopen.AppOpenAd;
+
+import java.util.Optional;
 
 import javax.annotation.Nullable;
 
@@ -18,8 +18,6 @@ import timber.log.Timber;
 import static com.google.android.gms.ads.appopen.AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT;
 
 public class AdmobAppOpenAd extends AbstractAd {
-
-    private static final String LOG_TAG = "AdmobAppOpenAd";
 
     private final Application application;
     private final String adUnitId;
@@ -44,26 +42,30 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        appOpenAdReceiver = new AppOpenAdReceiver(loadAdRequest.getAdCallback());
+        appOpenAdReceiver = new AppOpenAdReceiver(this, loadAdRequest.getAdCallback());
         AppOpenAd.load(application, adUnitId, new AdRequest.Builder().build(), APP_OPEN_AD_ORIENTATION_PORTRAIT, appOpenAdReceiver);
     }
 
     @Override
     public void render(AdRenderer adRenderer) {
-        AdmobAppOpenAdRender admobAppOpenAdRender = (AdmobAppOpenAdRender) adRenderer;
-        admobAppOpenAdRender.render(appOpenAdReceiver.getAppOpenAd(), appOpenAdDisplayer);
+        getAppOpenAdReceiver().ifPresent(receiver -> {
+            AdmobAppOpenAdRender admobAppOpenAdRender = (AdmobAppOpenAdRender) adRenderer;
+            admobAppOpenAdRender.render(receiver.getAppOpenAd(), appOpenAdDisplayer);
+        });
+    }
+
+    private Optional<AppOpenAdReceiver> getAppOpenAdReceiver() {
+        return Optional.ofNullable(appOpenAdReceiver);
     }
 
     @Override
     public boolean isLoaded() {
-        return appOpenAdReceiver != null && appOpenAdReceiver.isLoaded();
+        return getAppOpenAdReceiver().map(AppOpenAdReceiver::isLoaded).orElse(false);
     }
 
     @Override
     public void onDestroy() {
-        if (appOpenAdReceiver != null) {
-            appOpenAdReceiver.destroy();
-            appOpenAdReceiver = null;
-        }
+        getAppOpenAdReceiver().ifPresent(AppOpenAdReceiver::destroy);
+        appOpenAdReceiver = null;
     }
 }

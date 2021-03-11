@@ -41,50 +41,45 @@ public class AdmobNativeAd extends AdmobAd {
         if (nativeAdOptions != null) {
             builder.withNativeAdOptions(nativeAdOptions);
         }
-        builder.forNativeAd(nativeAd ->
-        {
-            Timber.d("adLoaded!");
-            this.nativeAd = nativeAd;
-            loadAdRequest.getAdCallback().adLoaded();
-
-        }).withAdListener(new AdListener() {
+        builder.forNativeAd(nativeAd -> this.nativeAd = nativeAd);
+        builder.withAdListener(new AdListener() {
 
             @Override
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
-                Timber.i("loadAdError=%s", loadAdError.toString());
-                loadAdRequest.getAdCallback().adLoadFailed();
+                Timber.i("Failed to load native ad=%s error=%s", AdmobNativeAd.this, loadAdError.toString());
+                loadAdRequest.getAdCallback().onLoadFailed(AdmobNativeAd.this);
             }
 
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                loadAdRequest.getAdCallback().adClicked();
+                loadAdRequest.getAdCallback().onClicked(AdmobNativeAd.this);
             }
 
             @Override
             public void onAdClosed() {
                 super.onAdClosed();
-                loadAdRequest.getAdCallback().adClosed();
+                loadAdRequest.getAdCallback().onClosed(AdmobNativeAd.this);
             }
 
             @Override
             public void onAdOpened() {
                 super.onAdOpened();
-                loadAdRequest.getAdCallback().adDisplayed();
+                loadAdRequest.getAdCallback().onDisplayed(AdmobNativeAd.this);
             }
 
             @Override
             public void onAdLoaded() {
                 loaded.set(true);
                 super.onAdLoaded();
-                loadAdRequest.getAdCallback().adLoaded();
+                loadAdRequest.getAdCallback().onLoaded(AdmobNativeAd.this);
             }
 
             @Override
             public void onAdImpression() {
                 super.onAdImpression();
-                loadAdRequest.getAdCallback().onAdImpression();
+                loadAdRequest.getAdCallback().onImpression(AdmobNativeAd.this);
             }
         }).build().loadAd(buildAdRequest(loadAdRequest));
     }

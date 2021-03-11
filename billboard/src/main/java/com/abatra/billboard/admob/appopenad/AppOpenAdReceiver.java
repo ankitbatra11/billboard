@@ -2,6 +2,7 @@ package com.abatra.billboard.admob.appopenad;
 
 import android.os.SystemClock;
 
+import com.abatra.billboard.Ad;
 import com.abatra.billboard.AdCallback;
 import com.google.android.gms.ads.appopen.AppOpenAd;
 
@@ -14,8 +15,8 @@ public class AppOpenAdReceiver extends AdCallbackAppOpenAdCallbackAdapter {
     private long loadTimeMillis;
     private AppOpenAd appOpenAd;
 
-    public AppOpenAdReceiver(AdCallback adCallback) {
-        super(adCallback);
+    public AppOpenAdReceiver(Ad ad, AdCallback adCallback) {
+        super(ad, adCallback);
     }
 
     @Override

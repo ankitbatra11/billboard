@@ -2,6 +2,8 @@ package com.abatra.billboard;
 
 import androidx.annotation.Nullable;
 
+import java.util.Optional;
+
 abstract public class LoadAdRequest {
 
     @Nullable
@@ -13,6 +15,6 @@ abstract public class LoadAdRequest {
     }
 
     public AdCallback getAdCallback() {
-        return adCallback != null ? adCallback : AdCallback.LOG;
+        return Optional.ofNullable(adCallback).orElse(AdCallback.LOG);
     }
 }

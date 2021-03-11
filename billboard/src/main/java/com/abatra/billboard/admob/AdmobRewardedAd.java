@@ -13,6 +13,8 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 
+import java.util.Optional;
+
 public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
 
     @Nullable
@@ -29,45 +31,46 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 super.onAdLoaded(rewardedAd);
                 AdmobRewardedAd.this.rewardedAd = rewardedAd;
-                loadAdRequest.getAdCallback().adLoaded();
+                loadAdRequest.getAdCallback().onLoaded(AdmobRewardedAd.this);
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 AdmobRewardedAd.this.rewardedAd = null;
-                loadAdRequest.getAdCallback().adLoadFailed();
+                loadAdRequest.getAdCallback().onLoadFailed(AdmobRewardedAd.this);
             }
         });
     }
 
     @Override
     public boolean isLoaded() {
-        return rewardedAd != null;
+        return getRewardedAd().isPresent();
+    }
+
+    private Optional<RewardedAd> getRewardedAd() {
+        return Optional.ofNullable(rewardedAd);
     }
 
     @Override
     public void render(AdRenderer adRenderer) {
-        if (rewardedAd != null) {
+        getRewardedAd().ifPresent(rewardedAd -> {
             AdmobRewardedAdRenderer renderer = (AdmobRewardedAdRenderer) adRenderer;
             renderer.render(rewardedAd);
-        }
+        });
     }
 
     @Override
-    public Reward getReward() {
-        return rewardedAd != null
-                ? rewardedAd.getRewardItem() != null ? new AdmobReward(rewardedAd.getRewardItem()) : null
-                : null;
-
+    public Optional<Reward> getReward() {
+        return getRewardedAd()
+                .flatMap(ad -> Optional.ofNullable(ad.getRewardItem()))
+                .map(AdmobReward::new);
     }
 
     @Override
     public void onDestroy() {
-        if (rewardedAd != null) {
-            rewardedAd.setFullScreenContentCallback(null);
-            rewardedAd = null;
-        }
+        getRewardedAd().ifPresent(rewardedAd -> rewardedAd.setFullScreenContentCallback(null));
+        rewardedAd = null;
         super.onDestroy();
     }
 }

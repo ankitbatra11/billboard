@@ -1,99 +1,79 @@
 package com.abatra.billboard;
 
 import com.abatra.billboard.admob.banner.AdaptiveBannerAdCallback;
-import com.google.android.gms.ads.AdError;
-import com.google.android.gms.ads.FullScreenContentCallback;
 
 import timber.log.Timber;
 
-public interface AdCallback extends AdaptiveBannerAdCallback {
+public interface AdCallback extends AdaptiveBannerAdCallback, ScreenAdCallback {
 
     AdCallback LOG = new LogAdCallback();
 
-    void adLoaded();
-
-    void adLoadFailed();
-
-    void adClosed();
-
-    void adClicked();
-
-    void adDisplayed();
-
-    void adFailedToShow();
-
-    default FullScreenContentCallback asFullScreenContentCallback() {
-        return new FullScreenContentCallbackAdapter(this);
+    default void onLoaded(Ad ad) {
     }
 
-    default void onAdImpression() {
+    default void onLoadFailed(Ad ad) {
+    }
+
+    @Override
+    default void onClosed(Ad ad) {
+    }
+
+    @Override
+    default void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
+    }
+
+    default void onClicked(Ad ad) {
+    }
+
+    default void onDisplayed(Ad ad) {
+    }
+
+    default void onFailedToShow(Ad ad, Throwable error) {
+    }
+
+    default void onImpression(Ad ad) {
     }
 
     class LogAdCallback implements AdCallback {
 
-        public LogAdCallback() {
+        @Override
+        public void onLoaded(Ad ad) {
+            Timber.d("loaded ad=%s", ad);
         }
 
         @Override
-        public void adLoaded() {
-            Timber.d("ad loaded");
+        public void onLoadFailed(Ad ad) {
+            Timber.d("load failed ad=%s", ad);
         }
 
         @Override
-        public void adLoadFailed() {
-            Timber.d("ad load failed");
-        }
-
-        @Override
-        public void adClosed() {
-            Timber.d("ad closed");
-        }
-
-        @Override
-        public void adClicked() {
-            Timber.d("ad clicked");
-        }
-
-        @Override
-        public void adDisplayed() {
-            Timber.d("ad displayed");
-        }
-
-        @Override
-        public void adFailedToShow() {
-            Timber.d("ad failed to show");
+        public void onClosed(Ad ad) {
+            Timber.d("closed ad=%s", ad);
         }
 
         @Override
         public void onAdaptiveBannerContainerMinHeightLoaded(int minHeight) {
             Timber.d("onAdaptiveBannerContainerMinHeightLoaded minHeight=%d", minHeight);
         }
-    }
 
-    class FullScreenContentCallbackAdapter extends FullScreenContentCallback {
-
-        private final AdCallback adCallback;
-
-        public FullScreenContentCallbackAdapter(AdCallback adCallback) {
-            this.adCallback = adCallback;
+        @Override
+        public void onClicked(Ad ad) {
+            Timber.d("clicked ad=%s", ad);
         }
 
         @Override
-        public void onAdFailedToShowFullScreenContent(AdError adError) {
-            super.onAdFailedToShowFullScreenContent(adError);
-            adCallback.adFailedToShow();
+        public void onDisplayed(Ad ad) {
+            Timber.d("displayed ad=%s", ad);
         }
 
         @Override
-        public void onAdShowedFullScreenContent() {
-            super.onAdShowedFullScreenContent();
-            adCallback.adDisplayed();
+        public void onFailedToShow(Ad ad, Throwable error) {
+            Timber.i(error, "failed to show ad=%s", ad);
         }
 
         @Override
-        public void onAdDismissedFullScreenContent() {
-            super.onAdDismissedFullScreenContent();
-            adCallback.adClosed();
+        public void onImpression(Ad ad) {
+            Timber.d("onImpression ad=%s", ad);
         }
     }
 }
