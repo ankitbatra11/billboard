@@ -11,16 +11,16 @@ import com.abatra.billboard.AdCallback;
 import com.abatra.billboard.admob.AdmobInterstitialAd;
 import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobLoadAdRequest;
-import com.abatra.billboard.admob.AdmobNativeAd;
 import com.abatra.billboard.admob.AdmobRewardedAd;
 import com.abatra.billboard.admob.AdmobRewardedAdRenderer;
 import com.abatra.billboard.admob.AdmobRewardedInterstitialAd;
 import com.abatra.billboard.admob.AdmobRewardedInterstitialAdRenderer;
-import com.abatra.billboard.admob.ViewAdmobNativeAdRenderer;
 import com.abatra.billboard.admob.appopenad.AppOpenAdActivity;
 import com.abatra.billboard.admob.banner.AdmobAdaptiveBannerAd;
 import com.abatra.billboard.admob.banner.AdmobBannerAd;
 import com.abatra.billboard.admob.banner.AdmobBannerAdRenderer;
+import com.abatra.billboard.admob.nativead.AdmobNativeAd;
+import com.abatra.billboard.admob.nativead.DefaultAdmobNativeAdRenderer;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
@@ -60,14 +60,13 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
             public void onLoaded(Ad ad) {
                 uiTask(() -> {
 
-                    ad.render(new ViewAdmobNativeAdRenderer(binding.unifiedNativeAdView, R.id.native_ad_title)
-                            .setIconViewId(R.id.native_ad_icon)
-                            .setBodyViewId(R.id.native_ad_subtitle)
-                            .setCtaViewId(R.id.native_ad_cta));
+                    ad.render(new DefaultAdmobNativeAdRenderer(binding.unifiedNativeAdView, binding.nativeAdTitle)
+                            .setIconImageView(binding.nativeAdIcon)
+                            .setBodyTextView(binding.nativeAdSubtitle)
+                            .setCallToActionTextView(binding.nativeAdCta));
 
                     return null;
                 });
-
             }
         }));
 
