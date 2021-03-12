@@ -67,5 +67,6 @@ public class AdmobAppOpenAd extends AbstractAd {
     public void onDestroy() {
         getAppOpenAdReceiver().ifPresent(AppOpenAdReceiver::destroy);
         appOpenAdReceiver = null;
+        super.onDestroy();
     }
 }

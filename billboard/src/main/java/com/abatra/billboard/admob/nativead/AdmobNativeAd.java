@@ -1,9 +1,10 @@
-package com.abatra.billboard.admob;
+package com.abatra.billboard.admob.nativead;
 
 import android.content.Context;
 
 import com.abatra.billboard.AdRenderer;
 import com.abatra.billboard.LoadAdRequest;
+import com.abatra.billboard.admob.AdmobAd;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.LoadAdError;
