@@ -16,7 +16,7 @@ abstract public class AbstractAd implements Ad {
     private AdCallback requestAdCallback;
 
     @Override
-    public void loadAd(LoadAdRequest loadAdRequest) {
+    public void loadAdIfNotLoadingOrLoaded(LoadAdRequest loadAdRequest) {
         if (isLoaded()) {
             Timber.d("ad=%s is already loaded", toString());
             loadAdRequest.getAdCallback().onLoaded(this);
@@ -44,10 +44,21 @@ abstract public class AbstractAd implements Ad {
     protected abstract void doLoadAd(LoadAdRequest loadAdRequest);
 
     @Override
+    public void forceLoad(LoadAdRequest loadAdRequest) {
+        destroyState();
+        loadAdIfNotLoadingOrLoaded(loadAdRequest);
+    }
+
     @CallSuper
-    public void onDestroy() {
+    protected void destroyState() {
         requestAdCallback = null;
         loading.set(false);
+    }
+
+    @Override
+    @CallSuper
+    public void onDestroy() {
+        destroyState();
     }
 
     private class AdCallbackDelegate extends AdCallback.LogAdCallback implements AdCallback {

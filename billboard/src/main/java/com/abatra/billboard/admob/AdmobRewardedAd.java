@@ -27,6 +27,7 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
         RewardedAd.load(requireContext(), id, buildAdRequest(loadAdRequest), new RewardedAdLoadCallback() {
+
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 super.onAdLoaded(rewardedAd);
@@ -68,9 +69,9 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     }
 
     @Override
-    public void onDestroy() {
+    protected void destroyState() {
         getRewardedAd().ifPresent(rewardedAd -> rewardedAd.setFullScreenContentCallback(null));
         rewardedAd = null;
-        super.onDestroy();
+        super.destroyState();
     }
 }

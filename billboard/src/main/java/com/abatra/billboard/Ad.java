@@ -7,11 +7,13 @@ import com.abatra.android.wheelie.lifecycle.ILifecycleObserver;
 
 public interface Ad extends ILifecycleObserver {
 
-    void loadAd(LoadAdRequest loadAdRequest);
+    void loadAdIfNotLoadingOrLoaded(LoadAdRequest loadAdRequest);
 
     boolean isLoaded();
 
     void render(AdRenderer adRenderer);
+
+    void forceLoad(LoadAdRequest loadAdRequest);
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     void onDestroy();

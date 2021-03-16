@@ -60,13 +60,13 @@ public class AdmobBannerAd extends AdmobAd {
     }
 
     @Override
-    public void onDestroy() {
+    protected void destroyState() {
         getAdView().ifPresent(adView -> {
             adView.setAdListener(null);
             adView.destroy();
         });
         adView = null;
         loaded.set(false);
-        super.onDestroy();
+        super.destroyState();
     }
 }

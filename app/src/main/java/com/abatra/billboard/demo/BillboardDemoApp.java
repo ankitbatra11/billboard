@@ -27,7 +27,7 @@ public class BillboardDemoApp extends MultiDexApplication {
 
         if (appOpenAd == null) {
             appOpenAd = AdmobAppOpenAd.create(this, "ca-app-pub-3940256099942544/3419835294");
-            appOpenAd.loadAd(new AdmobLoadAdRequest());
+            appOpenAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest());
         }
     }
 }

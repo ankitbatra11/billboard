@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
         admobNativeAd = new AdmobNativeAd(this, "ca-app-pub-3940256099942544/2247696110");
         admobNativeAd.observeLifecycle(this);
-        admobNativeAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback() {
+        admobNativeAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest().setAdCallback(new AdCallback() {
             @Override
             public void onLoaded(Ad ad) {
                 uiTask(() -> {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
             Optional.ofNullable(admobInterstitialAd).ifPresent(AdmobInterstitialAd::onDestroy);
             admobInterstitialAd = new AdmobInterstitialAd(MainActivity.this, "ca-app-pub-3940256099942544/1033173712");
             admobInterstitialAd.observeLifecycle(this);
-            admobInterstitialAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
+            admobInterstitialAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
                 @Override
                 public void onLoaded(Ad ad) {
                     super.onLoaded(ad);
@@ -87,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
             Optional.ofNullable(admobRewardedAd).ifPresent(AdmobRewardedAd::onDestroy);
             admobRewardedAd = new AdmobRewardedAd(MainActivity.this, "ca-app-pub-3940256099942544/5224354917");
             admobRewardedAd.observeLifecycle(this);
-            admobRewardedAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
+            admobRewardedAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
                 @Override
                 public void onLoaded(Ad ad) {
                     super.onLoaded(ad);
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
 
         admobBannerAd = AdmobAdaptiveBannerAd.withCurrentOrientationAnchoredAdSize(this, "ca-app-pub-3940256099942544/6300978111");
         admobBannerAd.observeLifecycle(this);
-        admobBannerAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback() {
+        admobBannerAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest().setAdCallback(new AdCallback() {
 
             @Override
             public void onLoaded(Ad ad) {
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements AppOpenAdActivity
     private void loadRewardedInterstitialAd() {
         Optional.ofNullable(admobRewardedInterstitialAd).ifPresent(AdmobRewardedInterstitialAd::onDestroy);
         admobRewardedInterstitialAd = new AdmobRewardedInterstitialAd(this, "ca-app-pub-3940256099942544/5354046379");
-        admobRewardedInterstitialAd.loadAd(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
+        admobRewardedInterstitialAd.loadAdIfNotLoadingOrLoaded(new AdmobLoadAdRequest().setAdCallback(new AdCallback.LogAdCallback() {
             @Override
             public void onLoaded(Ad ad) {
                 super.onLoaded(ad);
