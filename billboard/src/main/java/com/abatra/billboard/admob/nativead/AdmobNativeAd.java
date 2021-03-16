@@ -11,6 +11,7 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdOptions;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nullable;
@@ -92,20 +93,26 @@ public class AdmobNativeAd extends AdmobAd {
 
     @Override
     public void render(AdRenderer adRenderer) {
-        if (nativeAd != null) {
+        getNativeAd().ifPresent(nativeAd -> {
             AdmobNativeAdRenderer admobNativeAdRenderer = (AdmobNativeAdRenderer) adRenderer;
             admobNativeAdRenderer.render(nativeAd);
-        }
+        });
+    }
+
+    private Optional<NativeAd> getNativeAd() {
+        return Optional.ofNullable(nativeAd);
+    }
+
+    @Override
+    protected void destroyState() {
+        getNativeAd().ifPresent(NativeAd::destroy);
+        loaded.set(false);
+        super.destroyState();
     }
 
     @Override
     public void onDestroy() {
-        if (nativeAd != null) {
-            nativeAd.destroy();
-            nativeAd = null;
-        }
         nativeAdOptions = null;
-        loaded.set(false);
         super.onDestroy();
     }
 }

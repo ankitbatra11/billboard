@@ -11,6 +11,8 @@ import com.google.common.base.Supplier;
 import bolts.Task;
 import timber.log.Timber;
 
+import static com.abatra.android.wheelie.thread.SaferTask.backgroundTask;
+
 public class AdmobAdaptiveBannerAd extends AdmobBannerAd {
 
     public AdmobAdaptiveBannerAd(Context context, String id, Supplier<AdSize> adSizeSupplier) {
@@ -31,17 +33,23 @@ public class AdmobAdaptiveBannerAd extends AdmobBannerAd {
 
     @Override
     protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        Task.callInBackground(this::loadBannerContainerMinHeight).continueWith(task ->
+        backgroundTask(this::loadBannerContainerMinHeight).continueOnBackgroundThread(task ->
         {
             notifyBannerContainerMinHeightLoadResult(task, loadAdRequest);
             return null;
 
-        }).continueWith(task ->
+        }).continueOnUiThread(task ->
         {
-            super.doLoadAd(loadAdRequest);
+            AdmobAdaptiveBannerAd.super.loadAdIfNotLoadingOrLoaded(loadAdRequest);
             return null;
+        });
+    }
 
-        }, Task.UI_THREAD_EXECUTOR);
+    private int loadBannerContainerMinHeight() {
+        WindowManager windowManager = (WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(outMetrics);
+        return (int) (outMetrics.heightPixels * 0.15);
     }
 
     private void notifyBannerContainerMinHeightLoadResult(Task<Integer> task, LoadAdRequest loadAdRequest) {
@@ -54,12 +62,5 @@ public class AdmobAdaptiveBannerAd extends AdmobBannerAd {
                 Timber.e("Could not get banner container min height!");
             }
         }
-    }
-
-    private int loadBannerContainerMinHeight() {
-        WindowManager windowManager = (WindowManager) requireContext().getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics outMetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(outMetrics);
-        return (int) (outMetrics.heightPixels * 0.15);
     }
 }

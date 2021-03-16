@@ -79,9 +79,9 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
     }
 
     @Override
-    public void onDestroy() {
+    protected void destroyState() {
         getRewardedInterstitialAd().ifPresent(ad -> ad.setFullScreenContentCallback(null));
         rewardedInterstitialAd = null;
-        super.onDestroy();
+        super.destroyState();
     }
 }

@@ -33,7 +33,7 @@ public class AdmobAppOpenAd extends AbstractAd {
 
     public static AdmobAppOpenAd create(Application application, String adUnitId) {
 
-        MobileAds.initialize(application, initializationStatus -> Timber.i(" MobileAds.initialized"));
+        MobileAds.initialize(application, initializationStatus -> Timber.i("MobileAds.initialized"));
 
         AdmobAppOpenAd admobAppOpenAd = new AdmobAppOpenAd(application, adUnitId);
         admobAppOpenAd.appOpenAdDisplayer = AppOpenAdDisplayer.create(application, admobAppOpenAd);

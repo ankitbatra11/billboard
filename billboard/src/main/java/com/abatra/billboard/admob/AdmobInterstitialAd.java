@@ -58,9 +58,9 @@ public class AdmobInterstitialAd extends AdmobAd {
     }
 
     @Override
-    public void onDestroy() {
+    protected void destroyState() {
         getInterstitialAd().ifPresent(interstitialAd -> interstitialAd.setFullScreenContentCallback(null));
         interstitialAd = null;
-        super.onDestroy();
+        super.destroyState();
     }
 }

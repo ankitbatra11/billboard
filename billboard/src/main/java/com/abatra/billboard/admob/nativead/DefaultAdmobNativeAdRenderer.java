@@ -36,6 +36,8 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     private TextNativeAdField advertiserTextNativeAdField;
     @Nullable
     private MediaView mediaView;
+    @Nullable
+    private PrimaryImageNativeAdField primaryImageNativeAdField;
 
     public DefaultAdmobNativeAdRenderer(NativeAdView nativeAdView, TextNativeAdField headlineTextNativeAdField) {
         this.nativeAdView = nativeAdView;
@@ -110,6 +112,16 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
         return setAdvertiserTextNativeAdField(new TextViewTextNativeAdField(advertiserTextView));
     }
 
+    public DefaultAdmobNativeAdRenderer setPrimaryImageNativeAdField(@Nullable PrimaryImageNativeAdField primaryImageNativeAdField) {
+        this.primaryImageNativeAdField = primaryImageNativeAdField;
+        return this;
+    }
+
+    public DefaultAdmobNativeAdRenderer setPrimaryImageView(ImageView primaryImageView) {
+        this.primaryImageNativeAdField = new ImageViewPrimaryImageNativeAdField(primaryImageView);
+        return this;
+    }
+
     @Override
     public void render(@Nonnull NativeAd nativeAd) {
 
@@ -118,15 +130,20 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
                 headlineTextNativeAdField,
                 NativeAdView::setHeadlineView);
 
-        setValue(NativeAdView::getBodyView,
+        ifNativeAdFieldNotNullSetValue(NativeAdView::getBodyView,
                 nativeAd::getBody,
                 bodyTextNativeAdField,
                 NativeAdView::setBodyView);
 
-        setValue(NativeAdView::getCallToActionView,
+        ifNativeAdFieldNotNullSetValue(NativeAdView::getCallToActionView,
                 nativeAd::getCallToAction,
                 callToActionTextNativeAdField,
                 NativeAdView::setCallToActionView);
+
+        ifNativeAdFieldNotNullSetValue(NativeAdView::getImageView,
+                nativeAd::getImages,
+                primaryImageNativeAdField,
+                NativeAdView::setImageView);
 
         ifNativeAdFieldNotNullSetValue(NativeAdView::getIconView,
                 nativeAd::getIcon,
@@ -173,8 +190,11 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
                                 NativeAdField<V> nativeAdField,
                                 BiConsumer<NativeAdView, View> fieldViewSetter) {
         if (fieldViewGetter.apply(nativeAdView) == null) {
-            nativeAdField.setValue(valueSupplier.get());
-            fieldViewSetter.accept(nativeAdView, nativeAdField.getView());
+            V fieldValue = valueSupplier.get();
+            if (fieldValue != null) {
+                nativeAdField.setValue(fieldValue);
+                fieldViewSetter.accept(nativeAdView, nativeAdField.getView());
+            }
         }
     }
 }
