@@ -8,11 +8,14 @@ import com.google.android.gms.ads.mediation.MediationExtrasReceiver;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AdmobLoadAdRequest extends LoadAdRequest {
+public class AdmobLoadAdRequest implements LoadAdRequest {
+
+    public static final AdmobLoadAdRequest EMPTY = new AdmobLoadAdRequest();
 
     private final Map<Class<? extends MediationExtrasReceiver>, Bundle> networkExtrasBundle = new HashMap<>();
 
-    public AdmobLoadAdRequest putNetworkExtra(Class<? extends MediationExtrasReceiver> extraReceiverClass, String param, String value) {
+    public AdmobLoadAdRequest putNetworkExtra(Class<? extends MediationExtrasReceiver> extraReceiverClass,
+                                              String param, String value) {
         Bundle bundle = networkExtrasBundle.get(extraReceiverClass);
         if (bundle == null) {
             bundle = new Bundle();

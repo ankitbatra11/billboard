@@ -2,10 +2,13 @@ package com.abatra.billboard.admob;
 
 import android.content.Context;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.AdResource;
 import com.abatra.billboard.IRewardedAd;
 import com.abatra.billboard.LoadAdRequest;
 import com.abatra.billboard.Reward;
@@ -27,11 +30,11 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
     }
 
     @Override
-    protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        MobileAds.initialize(requireContext(), initializationStatus -> withMobileAdsInitializedLoadAd(loadAdRequest));
+    protected void tryLoadingAd(LoadAdRequest loadAdRequest, MutableLiveData<AdResource> liveData) {
+        MobileAds.initialize(requireContext(), initializationStatus -> withMobileAdsInitializedLoadAd(loadAdRequest, liveData));
     }
 
-    private void withMobileAdsInitializedLoadAd(LoadAdRequest loadAdRequest) {
+    private void withMobileAdsInitializedLoadAd(LoadAdRequest loadAdRequest, MutableLiveData<AdResource> liveData) {
         getContext().ifPresent(context -> {
             AdRequest adRequest = buildAdRequest(loadAdRequest);
             RewardedInterstitialAd.load(context, id, adRequest, new RewardedInterstitialAdLoadCallback() {
@@ -40,14 +43,14 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
                 public void onAdLoaded(@NonNull RewardedInterstitialAd rewardedInterstitialAd) {
                     super.onAdLoaded(rewardedInterstitialAd);
                     AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = rewardedInterstitialAd;
-                    loadAdRequest.getAdCallback().onLoaded(AdmobRewardedInterstitialAd.this);
+                    liveData.setValue(LOADED);
                 }
 
                 @Override
                 public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                     super.onAdFailedToLoad(loadAdError);
                     AdmobRewardedInterstitialAd.this.rewardedInterstitialAd = null;
-                    loadAdRequest.getAdCallback().onLoadFailed(AdmobRewardedInterstitialAd.this);
+                    liveData.setValue(AdResource.error(new RuntimeException(loadAdError.toString())));
                 }
             });
         });
@@ -79,9 +82,10 @@ public class AdmobRewardedInterstitialAd extends AdmobAd implements IRewardedAd 
     }
 
     @Override
-    protected void destroyState() {
+    @CallSuper
+    public void onDestroy() {
         getRewardedInterstitialAd().ifPresent(ad -> ad.setFullScreenContentCallback(null));
         rewardedInterstitialAd = null;
-        super.destroyState();
+        super.onDestroy();
     }
 }

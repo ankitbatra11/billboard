@@ -2,7 +2,12 @@ package com.abatra.billboard.admob.nativead;
 
 import android.content.Context;
 
+import androidx.annotation.CallSuper;
+import androidx.lifecycle.MutableLiveData;
+
+import com.abatra.billboard.AdInteraction;
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.AdResource;
 import com.abatra.billboard.LoadAdRequest;
 import com.abatra.billboard.admob.AdmobAd;
 import com.google.android.gms.ads.AdListener;
@@ -38,8 +43,8 @@ public class AdmobNativeAd extends AdmobAd {
     }
 
     @Override
-    protected void doLoadAd(LoadAdRequest loadAdRequest) {
-        AdLoader.Builder builder = new AdLoader.Builder(getContext().orElseThrow(IllegalStateException::new), id);
+    protected void tryLoadingAd(LoadAdRequest loadAdRequest, MutableLiveData<AdResource> liveData) {
+        AdLoader.Builder builder = new AdLoader.Builder(requireContext(), id);
         if (nativeAdOptions != null) {
             builder.withNativeAdOptions(nativeAdOptions);
         }
@@ -50,38 +55,38 @@ public class AdmobNativeAd extends AdmobAd {
             public void onAdFailedToLoad(LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 Timber.i("Failed to load native ad=%s error=%s", AdmobNativeAd.this, loadAdError.toString());
-                loadAdRequest.getAdCallback().onLoadFailed(AdmobNativeAd.this);
+                liveData.setValue(AdResource.error(new RuntimeException(loadAdError.toString())));
             }
 
             @Override
             public void onAdClicked() {
                 super.onAdClicked();
-                loadAdRequest.getAdCallback().onClicked(AdmobNativeAd.this);
+                liveData.setValue(AdResource.interacted(AdInteraction.CLICKED));
             }
 
             @Override
             public void onAdClosed() {
                 super.onAdClosed();
-                loadAdRequest.getAdCallback().onClosed(AdmobNativeAd.this);
+                liveData.setValue(AdResource.interacted(AdInteraction.CLOSED));
             }
 
             @Override
             public void onAdOpened() {
                 super.onAdOpened();
-                loadAdRequest.getAdCallback().onDisplayed(AdmobNativeAd.this);
+                liveData.setValue(AdResource.interacted(AdInteraction.OPENED));
             }
 
             @Override
             public void onAdLoaded() {
-                loaded.set(true);
                 super.onAdLoaded();
-                loadAdRequest.getAdCallback().onLoaded(AdmobNativeAd.this);
+                loaded.set(true);
+                liveData.setValue(AdResource.loaded());
             }
 
             @Override
             public void onAdImpression() {
                 super.onAdImpression();
-                loadAdRequest.getAdCallback().onImpression(AdmobNativeAd.this);
+                liveData.setValue(AdResource.interacted(AdInteraction.IMPRESSION));
             }
         }).build().loadAd(buildAdRequest(loadAdRequest));
     }
@@ -104,15 +109,11 @@ public class AdmobNativeAd extends AdmobAd {
     }
 
     @Override
-    protected void destroyState() {
-        getNativeAd().ifPresent(NativeAd::destroy);
-        loaded.set(false);
-        super.destroyState();
-    }
-
-    @Override
+    @CallSuper
     public void onDestroy() {
+        getNativeAd().ifPresent(NativeAd::destroy);
         nativeAdOptions = null;
+        loaded.set(false);
         super.onDestroy();
     }
 }

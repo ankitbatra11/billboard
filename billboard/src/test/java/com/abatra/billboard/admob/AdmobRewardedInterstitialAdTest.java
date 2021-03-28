@@ -2,6 +2,9 @@ package com.abatra.billboard.admob;
 
 import android.os.Build;
 
+import androidx.lifecycle.MutableLiveData;
+
+import com.abatra.billboard.AdResource;
 import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
@@ -40,6 +43,9 @@ public class AdmobRewardedInterstitialAdTest {
     @Mock
     private InitializationStatus mockedInitializationStatus;
 
+    @Mock
+    private MutableLiveData<AdResource> mockedAdResourceMutableLiveData;
+
     @Before
     public void setup() {
         MockitoAnnotations.openMocks(this);
@@ -51,7 +57,7 @@ public class AdmobRewardedInterstitialAdTest {
 
         try (MockedStatic<MobileAds> mobileAdsMockedStatic = mockStatic(MobileAds.class)) {
 
-            admobRewardedInterstitialAd.doLoadAd(mockedLoadAdRequest);
+            admobRewardedInterstitialAd.tryLoadingAd(mockedLoadAdRequest, mockedAdResourceMutableLiveData);
 
             mobileAdsMockedStatic.verify(() -> MobileAds.initialize(same(getApplicationContext()),
                     initializationCompleteListenerArgumentCaptor.capture()));
