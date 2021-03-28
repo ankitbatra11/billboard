@@ -2,10 +2,13 @@ package com.abatra.billboard.admob;
 
 import android.content.Context;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.AdResource;
 import com.abatra.billboard.LoadAdRequest;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
@@ -23,19 +26,19 @@ public class AdmobInterstitialAd extends AdmobAd {
     }
 
     @Override
-    protected void doLoadAd(LoadAdRequest loadAdRequest) {
+    protected void tryLoadingAd(LoadAdRequest loadAdRequest, MutableLiveData<AdResource> liveData) {
         InterstitialAd.load(requireContext(), id, buildAdRequest(loadAdRequest), new InterstitialAdLoadCallback() {
             @Override
             public void onAdLoaded(@NonNull InterstitialAd interstitialAd) {
                 super.onAdLoaded(interstitialAd);
                 AdmobInterstitialAd.this.interstitialAd = interstitialAd;
-                loadAdRequest.getAdCallback().onLoaded(AdmobInterstitialAd.this);
+                liveData.setValue(LOADED);
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
-                loadAdRequest.getAdCallback().onLoadFailed(AdmobInterstitialAd.this);
+                liveData.setValue(AdResource.error(new RuntimeException(loadAdError.toString())));
             }
         });
     }
@@ -58,9 +61,10 @@ public class AdmobInterstitialAd extends AdmobAd {
     }
 
     @Override
-    protected void destroyState() {
+    @CallSuper
+    public void onDestroy() {
         getInterstitialAd().ifPresent(interstitialAd -> interstitialAd.setFullScreenContentCallback(null));
         interstitialAd = null;
-        super.destroyState();
+        super.onDestroy();
     }
 }

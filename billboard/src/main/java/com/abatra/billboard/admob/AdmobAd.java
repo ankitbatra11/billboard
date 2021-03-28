@@ -27,6 +27,16 @@ abstract public class AdmobAd extends AbstractAd {
         this.id = id;
     }
 
+    protected AdRequest buildAdRequest(LoadAdRequest loadAdRequest) {
+        AdRequest.Builder builder = new AdRequest.Builder();
+        AdmobLoadAdRequest admobLoadAdRequest = (AdmobLoadAdRequest) loadAdRequest;
+        Set<Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle>> entries = admobLoadAdRequest.getNetworkExtrasBundle().entrySet();
+        for (Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle> extrasByAdapter : entries) {
+            builder.addNetworkExtrasBundle(extrasByAdapter.getKey(), extrasByAdapter.getValue());
+        }
+        return builder.build();
+    }
+
     protected Optional<Context> getContext() {
         return Optional.ofNullable(context);
     }
@@ -39,17 +49,6 @@ abstract public class AdmobAd extends AbstractAd {
     @CallSuper
     public void onDestroy() {
         context = null;
-        super.onDestroy();
-    }
-
-    protected AdRequest buildAdRequest(LoadAdRequest loadAdRequest) {
-        AdRequest.Builder builder = new AdRequest.Builder();
-        AdmobLoadAdRequest admobLoadAdRequest = (AdmobLoadAdRequest) loadAdRequest;
-        Set<Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle>> entries = admobLoadAdRequest.getNetworkExtrasBundle().entrySet();
-        for (Map.Entry<Class<? extends MediationExtrasReceiver>, Bundle> extrasByAdapter : entries) {
-            builder.addNetworkExtrasBundle(extrasByAdapter.getKey(), extrasByAdapter.getValue());
-        }
-        return builder.build();
     }
 
     @NonNull

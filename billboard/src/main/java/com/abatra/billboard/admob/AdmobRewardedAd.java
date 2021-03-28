@@ -2,10 +2,13 @@ package com.abatra.billboard.admob;
 
 import android.content.Context;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.MutableLiveData;
 
 import com.abatra.billboard.AdRenderer;
+import com.abatra.billboard.AdResource;
 import com.abatra.billboard.IRewardedAd;
 import com.abatra.billboard.LoadAdRequest;
 import com.abatra.billboard.Reward;
@@ -25,21 +28,21 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     }
 
     @Override
-    protected void doLoadAd(LoadAdRequest loadAdRequest) {
+    protected void tryLoadingAd(LoadAdRequest loadAdRequest, MutableLiveData<AdResource> liveData) {
         RewardedAd.load(requireContext(), id, buildAdRequest(loadAdRequest), new RewardedAdLoadCallback() {
 
             @Override
             public void onAdLoaded(@NonNull RewardedAd rewardedAd) {
                 super.onAdLoaded(rewardedAd);
                 AdmobRewardedAd.this.rewardedAd = rewardedAd;
-                loadAdRequest.getAdCallback().onLoaded(AdmobRewardedAd.this);
+                liveData.setValue(AdResource.loaded());
             }
 
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 AdmobRewardedAd.this.rewardedAd = null;
-                loadAdRequest.getAdCallback().onLoadFailed(AdmobRewardedAd.this);
+                liveData.setValue(AdResource.error(new RuntimeException(loadAdError.toString())));
             }
         });
     }
@@ -69,9 +72,10 @@ public class AdmobRewardedAd extends AdmobAd implements IRewardedAd {
     }
 
     @Override
-    protected void destroyState() {
+    @CallSuper
+    public void onDestroy() {
         getRewardedAd().ifPresent(rewardedAd -> rewardedAd.setFullScreenContentCallback(null));
         rewardedAd = null;
-        super.destroyState();
+        super.onDestroy();
     }
 }
