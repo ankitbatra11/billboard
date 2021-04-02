@@ -1,7 +1,6 @@
 package com.abatra.billboard.admob.nativead;
 
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
@@ -13,22 +12,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
-public class ImageViewPrimaryImageNativeAdField implements PrimaryImageNativeAdField {
+public class PrimaryImageViewNativeAdField extends ImageViewNativeAdField {
 
-    private final ImageView imageView;
-
-    public ImageViewPrimaryImageNativeAdField(ImageView imageView) {
-        this.imageView = imageView;
+    public PrimaryImageViewNativeAdField(ImageView imageView) {
+        super(imageView);
     }
 
     @Override
-    public View getView() {
-        return imageView;
-    }
-
-    @Override
-    public void setValue(@Nullable List<NativeAd.Image> value) {
-        getFirstDrawable(value).ifPresent(imageView::setImageDrawable);
+    public void setValue(NativeAd nativeAd) {
+        getFirstDrawable(nativeAd.getImages()).ifPresent(getView()::setImageDrawable);
     }
 
     protected Optional<Drawable> getFirstDrawable(@Nullable List<NativeAd.Image> images) {

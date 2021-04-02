@@ -1,15 +1,12 @@
 package com.abatra.billboard.admob.nativead;
 
-import android.view.View;
 import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
-import com.google.android.gms.ads.nativead.NativeAd;
-
 import java.util.Optional;
 
-public class ImageViewNativeAdField implements ImageNativeAdField {
+abstract public class ImageViewNativeAdField implements NativeAdField<ImageView> {
 
     private final ImageView imageView;
 
@@ -17,15 +14,20 @@ public class ImageViewNativeAdField implements ImageNativeAdField {
         this.imageView = imageView;
     }
 
+    @Nullable
+    public static NativeAdField<ImageView> goneIfMissingIconOrPrimaryImage(@Nullable ImageView imageView) {
+        return Optional.ofNullable(imageView)
+                .map(iv -> new GoneIfNotSetNativeAdField<>(new IconOrPrimaryImageViewNativeAdField(imageView)))
+                .orElse(null);
+    }
+
     @Override
-    public View getView() {
+    public ImageView getView() {
         return imageView;
     }
 
     @Override
-    public void setValue(@Nullable NativeAd.Image value) {
-        Optional.ofNullable(value)
-                .map(NativeAd.Image::getDrawable)
-                .ifPresent(imageView::setImageDrawable);
+    public boolean isSet() {
+        return Optional.ofNullable(getView().getDrawable()).isPresent();
     }
 }

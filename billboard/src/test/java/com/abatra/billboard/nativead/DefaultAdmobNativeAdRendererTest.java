@@ -32,6 +32,7 @@ public class DefaultAdmobNativeAdRendererTest {
     public static final String STORE = "store";
     public static final String PRICE = "price";
     public static final String ADVERTISER = "advertiser";
+
     @Mock
     private NativeAdView mockedNativeAdView;
 

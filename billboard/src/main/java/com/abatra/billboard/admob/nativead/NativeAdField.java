@@ -2,16 +2,21 @@ package com.abatra.billboard.admob.nativead;
 
 import android.view.View;
 
-import androidx.annotation.Nullable;
+import com.google.android.gms.ads.nativead.NativeAd;
 
-public interface NativeAdField<V> {
+public interface NativeAdField<VIEW extends View> {
     /**
      * @return View backing native ad field.
      */
-    View getView();
+    VIEW getView();
 
     /**
-     * @param value to set to native ad field view.
+     * @param nativeAd to use to set native ad field view.
      */
-    void setValue(@Nullable V value);
+    void setValue(NativeAd nativeAd);
+
+    /**
+     * @return True if the value is set for this field.
+     */
+    boolean isSet();
 }

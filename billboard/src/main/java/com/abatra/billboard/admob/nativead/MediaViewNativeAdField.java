@@ -1,15 +1,9 @@
 package com.abatra.billboard.admob.nativead;
 
-import android.view.View;
-
-import androidx.annotation.Nullable;
-
-import com.google.android.gms.ads.MediaContent;
 import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAd;
 
-import java.util.Optional;
-
-public class MediaViewNativeAdField implements NativeAdField<MediaContent> {
+public class MediaViewNativeAdField implements NativeAdField<MediaView> {
 
     private final MediaView mediaView;
 
@@ -18,12 +12,17 @@ public class MediaViewNativeAdField implements NativeAdField<MediaContent> {
     }
 
     @Override
-    public View getView() {
+    public MediaView getView() {
         return mediaView;
     }
 
     @Override
-    public void setValue(@Nullable MediaContent value) {
-        Optional.ofNullable(value).ifPresent(mediaView::setMediaContent);
+    public void setValue(NativeAd nativeAd) {
+        mediaView.setMediaContent(nativeAd.getMediaContent());
+    }
+
+    @Override
+    public boolean isSet() {
+        return true;
     }
 }
