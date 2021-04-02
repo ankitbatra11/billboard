@@ -17,6 +17,7 @@ import com.abatra.billboard.admob.banner.AdmobBannerAd;
 import com.abatra.billboard.admob.banner.AdmobBannerAdRenderer;
 import com.abatra.billboard.admob.nativead.AdmobNativeAd;
 import com.abatra.billboard.admob.nativead.DefaultAdmobNativeAdRenderer;
+import com.abatra.billboard.admob.nativead.ImageViewNativeAdField;
 import com.abatra.billboard.demo.databinding.ActivityMainBinding;
 import com.google.android.gms.ads.OnUserEarnedRewardListener;
 import com.google.android.gms.ads.rewardedinterstitial.RewardedInterstitialAd;
@@ -52,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
         admobNativeAd.loadAd(AdmobLoadAdRequest.EMPTY).observe(this, adResource -> {
             if (adResource.isLoaded()) {
                 admobNativeAd.render(new DefaultAdmobNativeAdRenderer(binding.unifiedNativeAdView, binding.nativeAdTitle)
-                        .setIconImageView(binding.nativeAdIcon)
+                        .setIconImageNativeAdField(ImageViewNativeAdField.goneIfMissingIconOrPrimaryImage(binding.nativeAdIcon))
                         .setBodyTextView(binding.nativeAdSubtitle)
                         .setCallToActionTextView(binding.nativeAdCta));
             }
