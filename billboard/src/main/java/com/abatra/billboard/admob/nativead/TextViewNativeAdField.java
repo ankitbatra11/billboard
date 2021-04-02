@@ -3,11 +3,13 @@ package com.abatra.billboard.admob.nativead;
 import android.view.View;
 import android.widget.TextView;
 
-public class TextViewTextNativeAdField implements TextNativeAdField {
+import androidx.annotation.Nullable;
+
+public class TextViewNativeAdField implements TextNativeAdField {
 
     private final TextView textView;
 
-    public TextViewTextNativeAdField(TextView textView) {
+    public TextViewNativeAdField(TextView textView) {
         this.textView = textView;
     }
 
@@ -17,7 +19,7 @@ public class TextViewTextNativeAdField implements TextNativeAdField {
     }
 
     @Override
-    public void setValue(String value) {
+    public void setValue(@Nullable String value) {
         textView.setText(value);
     }
 }

@@ -6,7 +6,7 @@ import com.abatra.android.wheelie.lifecycle.Resource;
 
 public class AdResource extends Resource<AdInteraction> {
 
-    private AdResource(Status status, @Nullable AdInteraction data, @Nullable Throwable error) {
+    protected AdResource(Status status, @Nullable AdInteraction data, @Nullable Throwable error) {
         super(status, data, error);
     }
 

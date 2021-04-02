@@ -2,9 +2,16 @@ package com.abatra.billboard.admob.nativead;
 
 import android.view.View;
 
-public interface NativeAdField<V> {
+import androidx.annotation.Nullable;
 
+public interface NativeAdField<V> {
+    /**
+     * @return View backing native ad field.
+     */
     View getView();
 
-    void setValue(V value);
+    /**
+     * @param value to set to native ad field view.
+     */
+    void setValue(@Nullable V value);
 }
