@@ -4,12 +4,14 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -35,7 +37,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     @Nullable
     private TextNativeAdField advertiserTextNativeAdField;
     @Nullable
-    private MediaView mediaView;
+    private MediaViewNativeAdField mediaViewNativeAdField;
     @Nullable
     private PrimaryImageNativeAdField primaryImageNativeAdField;
 
@@ -45,7 +47,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer(NativeAdView nativeAdView, TextView headlineTextView) {
-        this(nativeAdView, new TextViewTextNativeAdField(headlineTextView));
+        this(nativeAdView, new TextViewNativeAdField(headlineTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setStarRatingNativeAdField(StarRatingNativeAdField starRatingNativeAdField) {
@@ -54,7 +56,12 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setMediaView(MediaView mediaView) {
-        this.mediaView = mediaView;
+        mediaViewNativeAdField = new MediaViewNativeAdField(mediaView);
+        return this;
+    }
+
+    public DefaultAdmobNativeAdRenderer setMediaViewNativeAdField(@Nullable MediaViewNativeAdField mediaViewNativeAdField) {
+        this.mediaViewNativeAdField = mediaViewNativeAdField;
         return this;
     }
 
@@ -64,7 +71,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setBodyTextView(TextView bodyTextView) {
-        return setBodyTextNativeAdField(new TextViewTextNativeAdField(bodyTextView));
+        return setBodyTextNativeAdField(new TextViewNativeAdField(bodyTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setIconImageNativeAdField(ImageNativeAdField iconImageNativeAdField) {
@@ -73,7 +80,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setIconImageView(ImageView iconImageView) {
-        return setIconImageNativeAdField(new ImageViewImageNativeAdField(iconImageView));
+        return setIconImageNativeAdField(new ImageViewNativeAdField(iconImageView));
     }
 
     public DefaultAdmobNativeAdRenderer setCallToActionTextNativeAdField(TextNativeAdField callToActionTextNativeAdField) {
@@ -82,7 +89,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setCallToActionTextView(TextView callToActionTextView) {
-        return setCallToActionTextNativeAdField(new TextViewTextNativeAdField(callToActionTextView));
+        return setCallToActionTextNativeAdField(new TextViewNativeAdField(callToActionTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setStoreTextNativeAdField(TextNativeAdField storeTextNativeAdField) {
@@ -91,7 +98,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setStoreTextView(TextView storeTextView) {
-        return setStoreTextNativeAdField(new TextViewTextNativeAdField(storeTextView));
+        return setStoreTextNativeAdField(new TextViewNativeAdField(storeTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setPriceTextNativeAdField(TextNativeAdField priceTextNativeAdField) {
@@ -100,7 +107,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setPriceTextView(TextView priceTextView) {
-        return setPriceTextNativeAdField(new TextViewTextNativeAdField(priceTextView));
+        return setPriceTextNativeAdField(new TextViewNativeAdField(priceTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setAdvertiserTextNativeAdField(TextNativeAdField advertiserTextNativeAdField) {
@@ -109,7 +116,7 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
     }
 
     public DefaultAdmobNativeAdRenderer setAdvertiserTextView(TextView advertiserTextView) {
-        return setAdvertiserTextNativeAdField(new TextViewTextNativeAdField(advertiserTextView));
+        return setAdvertiserTextNativeAdField(new TextViewNativeAdField(advertiserTextView));
     }
 
     public DefaultAdmobNativeAdRenderer setPrimaryImageNativeAdField(@Nullable PrimaryImageNativeAdField primaryImageNativeAdField) {
@@ -170,31 +177,37 @@ public class DefaultAdmobNativeAdRenderer implements AdmobNativeAdRenderer {
                 advertiserTextNativeAdField,
                 NativeAdView::setAdvertiserView);
 
-        if (mediaView != null) {
-            nativeAdView.setMediaView(mediaView);
-        }
+        ifNativeAdFieldNotNullSetValue(NativeAdView::getMediaView,
+                nativeAd::getMediaContent,
+                mediaViewNativeAdField,
+                (nativeAdView, view) -> {
+                    MediaView mediaView = (MediaView) view;
+                    nativeAdView.setMediaView(mediaView);
+                });
+
         nativeAdView.setNativeAd(nativeAd);
     }
 
-    protected <V> void ifNativeAdFieldNotNullSetValue(Function<NativeAdView, View> nativeAdTextViewGetter,
-                                                      Supplier<V> textSupplier,
-                                                      NativeAdField<V> nativeAdField,
-                                                      BiConsumer<NativeAdView, View> fieldViewSetter) {
-        if (nativeAdField != null) {
-            setValue(nativeAdTextViewGetter, textSupplier, nativeAdField, fieldViewSetter);
-        }
+    protected <VALUE> void ifNativeAdFieldNotNullSetValue(Function<NativeAdView, View> nativeAdFieldViewGetter,
+                                                          Supplier<VALUE> valueSupplier,
+                                                          @Nullable NativeAdField<VALUE> nativeAdField,
+                                                          BiConsumer<NativeAdView, View> nativeAdFieldViewSetter) {
+        //noinspection CodeBlock2Expr
+        Optional.ofNullable(nativeAdField).ifPresent(field -> {
+            setValue(nativeAdFieldViewGetter, valueSupplier, nativeAdField, nativeAdFieldViewSetter);
+        });
     }
 
-    protected <V> void setValue(Function<NativeAdView, View> fieldViewGetter,
-                                Supplier<V> valueSupplier,
-                                NativeAdField<V> nativeAdField,
-                                BiConsumer<NativeAdView, View> fieldViewSetter) {
-        if (fieldViewGetter.apply(nativeAdView) == null) {
-            V fieldValue = valueSupplier.get();
-            if (fieldValue != null) {
-                nativeAdField.setValue(fieldValue);
-                fieldViewSetter.accept(nativeAdView, nativeAdField.getView());
-            }
+    protected <VALUE> void setValue(Function<NativeAdView, View> nativeAdFieldViewGetter,
+                                    Supplier<VALUE> valueSupplier,
+                                    @NonNull NativeAdField<VALUE> nativeAdField,
+                                    BiConsumer<NativeAdView, View> nativeAdFieldViewSetter) {
+        if (nativeAdFieldViewGetter.apply(nativeAdView) == null) {
+            nativeAdField.setValue(valueSupplier.get());
+            Optional.ofNullable(valueSupplier.get()).ifPresent(v -> {
+                View nativeAdFieldView = nativeAdField.getView();
+                nativeAdFieldViewSetter.accept(nativeAdView, nativeAdFieldView);
+            });
         }
     }
 }
