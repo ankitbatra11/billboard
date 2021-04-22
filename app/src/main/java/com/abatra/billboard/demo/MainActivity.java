@@ -5,7 +5,7 @@ import android.view.LayoutInflater;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.abatra.android.wheelie.lifecycle.ILifecycleOwner;
+import com.abatra.android.wheelie.lifecycle.owner.ILifecycleOwner;
 import com.abatra.billboard.admob.AdmobInterstitialAd;
 import com.abatra.billboard.admob.AdmobInterstitialAdRenderer;
 import com.abatra.billboard.admob.AdmobLoadAdRequest;
@@ -30,7 +30,7 @@ import timber.log.Timber;
 import static java.util.Objects.requireNonNull;
 
 @SuppressWarnings("FieldCanBeLocal")
-public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
+public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     private AdmobNativeAd admobNativeAd;
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
         setContentView(binding.getRoot());
 
         admobNativeAd = new AdmobNativeAd(this, "ca-app-pub-3940256099942544/2247696110");
-        admobNativeAd.observeLifecycle(this);
+        admobNativeAd.observeLifecycle(ILifecycleOwner.activity(this));
         admobNativeAd.loadAd(AdmobLoadAdRequest.EMPTY).observe(this, adResource -> {
             if (adResource.isLoaded()) {
                 admobNativeAd.render(new DefaultAdmobNativeAdRenderer(binding.unifiedNativeAdView, binding.nativeAdTitle)
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
         binding.interstitialBtn.setOnClickListener(v -> {
             Optional.ofNullable(admobInterstitialAd).ifPresent(AdmobInterstitialAd::onDestroy);
             admobInterstitialAd = new AdmobInterstitialAd(MainActivity.this, "ca-app-pub-3940256099942544/1033173712");
-            admobInterstitialAd.observeLifecycle(this);
+            admobInterstitialAd.observeLifecycle(ILifecycleOwner.activity(this));
             admobInterstitialAd.loadAd(AdmobLoadAdRequest.EMPTY).observe(this, adResource -> {
                 if (adResource.isLoaded()) {
                     admobInterstitialAd.render((AdmobInterstitialAdRenderer) interstitialAd -> interstitialAd.show(MainActivity.this));
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
         binding.rewardedBtn.setOnClickListener(v -> {
             Optional.ofNullable(admobRewardedAd).ifPresent(AdmobRewardedAd::onDestroy);
             admobRewardedAd = new AdmobRewardedAd(MainActivity.this, "ca-app-pub-3940256099942544/5224354917");
-            admobRewardedAd.observeLifecycle(this);
+            admobRewardedAd.observeLifecycle(ILifecycleOwner.activity(this));
             admobRewardedAd.loadAd(AdmobLoadAdRequest.EMPTY).observe(this, adResource -> {
                 if (adResource.isLoaded()) {
                     Snackbar.make(binding.getRoot(), requireNonNull(admobRewardedAd.getReward()).toString(), Snackbar.LENGTH_SHORT).show();
@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity implements ILifecycleOwner {
         binding.rewardedInterstitialBtn.setOnClickListener(v -> loadRewardedInterstitialAd());
 
         admobBannerAd = AdmobBannerAd.adaptive(this, "ca-app-pub-3940256099942544/6300978111");
-        admobBannerAd.observeLifecycle(this);
+        admobBannerAd.observeLifecycle(ILifecycleOwner.activity(this));
         admobBannerAd.loadAd(AdmobLoadAdRequest.EMPTY).observe(this, adResource -> {
             if (adResource.isLoaded()) {
                 admobBannerAd.render((AdmobBannerAdRenderer) adView -> {

@@ -2,7 +2,7 @@ package com.abatra.billboard;
 
 import androidx.lifecycle.LiveData;
 
-import com.abatra.android.wheelie.lifecycle.ILifecycleObserver;
+import com.abatra.android.wheelie.lifecycle.observer.ILifecycleObserver;
 
 public interface Ad extends ILifecycleObserver {
 

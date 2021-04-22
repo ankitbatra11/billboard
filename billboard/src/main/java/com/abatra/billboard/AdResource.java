@@ -2,9 +2,9 @@ package com.abatra.billboard;
 
 import androidx.annotation.Nullable;
 
-import com.abatra.android.wheelie.lifecycle.Resource;
+import com.abatra.android.wheelie.lifecycle.Lce;
 
-public class AdResource extends Resource<AdInteraction> {
+public class AdResource extends Lce<AdInteraction> {
 
     protected AdResource(Status status, @Nullable AdInteraction data, @Nullable Throwable error) {
         super(status, data, error);
