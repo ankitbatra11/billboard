@@ -25,6 +25,12 @@ public class AdmobLoadAdRequest implements LoadAdRequest {
         return this;
     }
 
+    public AdmobLoadAdRequest putNetworkExtraBundle(Class<? extends MediationExtrasReceiver> extraReceiverClass,
+                                                    Bundle bundle) {
+        networkExtrasBundle.put(extraReceiverClass, bundle);
+        return this;
+    }
+
     public Map<Class<? extends MediationExtrasReceiver>, Bundle> getNetworkExtrasBundle() {
         return networkExtrasBundle;
     }
