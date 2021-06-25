@@ -18,13 +18,15 @@ import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.common.base.Supplier;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.annotation.Nullable;
 
-import static com.abatra.android.wheelie.thread.BoltsUtils.getResult;
-import static com.abatra.android.wheelie.thread.SaferTask.backgroundTask;
+import static com.abatra.android.wheelie.core.async.bolts.BoltsUtils.getResult;
+import static com.abatra.android.wheelie.core.async.bolts.SaferTask.backgroundTask;
 
 public class AdmobBannerAd extends AdmobAd {
 
@@ -76,7 +78,7 @@ public class AdmobBannerAd extends AdmobAd {
             }
 
             @Override
-            public void onAdFailedToLoad(LoadAdError loadAdError) {
+            public void onAdFailedToLoad(@NotNull LoadAdError loadAdError) {
                 super.onAdFailedToLoad(loadAdError);
                 liveData.setValue(AdResource.error(new RuntimeException(loadAdError.toString())));
             }

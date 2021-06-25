@@ -57,7 +57,7 @@ dependencies {
     api group: 'com.google.guava', name: 'guava', version: GUAVA_VERSION
     api group: 'com.parse.bolts', name: 'bolts-tasks', version: '1.4.0'
     api group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: ANDROIDX_LIFECYCLE_EXTENSIONS_VERSION
-    api group: 'com.github.ankitbatra11', name: 'wheelie', version: '4.35.1'
+    api group: 'com.github.ankitbatra11.wheelie', name: 'lifecycle', version: '5.0.1'
 
     implementation "com.google.ads.mediation:facebook:$ADMOB_FACEBOOK_MEDIATION_VERSION"
     implementation "com.google.android.gms:play-services-ads:$PLAY_SERVICES_ADS_VERSION"

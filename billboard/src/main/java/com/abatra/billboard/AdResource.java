@@ -2,7 +2,7 @@ package com.abatra.billboard;
 
 import androidx.annotation.Nullable;
 
-import com.abatra.android.wheelie.lifecycle.Lce;
+import com.abatra.android.wheelie.core.Lce;
 
 public class AdResource extends Lce<AdInteraction> {
 

@@ -3,7 +3,7 @@ package com.abatra.billboard;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
-import com.abatra.android.wheelie.lifecycle.SingleLiveEvent;
+import com.abatra.android.wheelie.lifecycle.liveData.SingleLiveEvent;
 import com.abatra.android.wheelie.lifecycle.owner.ILifecycleOwner;
 
 import timber.log.Timber;
